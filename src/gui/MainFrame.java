@@ -255,6 +255,16 @@ public class MainFrame extends javax.swing.JFrame {
         } catch (java.io.FileNotFoundException e) {
             // File does not exist yet – start with empty data
             System.out.println("No data file found. Starting with empty collection.");
+            
+            JOptionPane.showMessageDialog(
+                    this,
+                    "No data file found.\n\n" +
+                    "A new collection will be created.\n" +
+                    "You can add media and save it to a CSV file.",
+                    "No Data File",
+                    JOptionPane.INFORMATION_MESSAGE
+                );
+            
         } catch (java.io.IOException e) {
             JOptionPane.showMessageDialog(
                 this,

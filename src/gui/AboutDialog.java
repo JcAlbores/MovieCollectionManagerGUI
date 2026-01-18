@@ -73,7 +73,7 @@ public class AboutDialog extends javax.swing.JDialog {
         getContentPane().add(panelHeader, java.awt.BorderLayout.PAGE_START);
 
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("Version 1.0");
+        jLabel2.setText("Version 2.0");
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);

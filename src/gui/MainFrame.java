@@ -61,6 +61,8 @@ public class MainFrame extends javax.swing.JFrame {
         
         
         initSidebarButtons();
+        initSortComboBox();
+        initCategoryFilter();
         initTableModel();
         initSearchPlaceholder();
         initTableSelectionListener();
@@ -87,8 +89,24 @@ public class MainFrame extends javax.swing.JFrame {
     private void initSidebarButtons() {
         setupSidebarButton(btnMedia);
         setupSidebarButton(btnEval);
-//        setupSidebarButton(btnFile);
     }
+    
+    private void initSortComboBox() {
+        cmbSort.addItemListener(e -> {
+            if (e.getStateChange() == java.awt.event.ItemEvent.SELECTED) {
+                updateTableView();
+            }
+        });
+    }
+    
+    private void initCategoryFilter() {
+        cmbCategoryFilter.addItemListener(e -> {
+            if (e.getStateChange() == java.awt.event.ItemEvent.SELECTED) {
+                updateTableView();
+            }
+        });
+    }
+
     
     private void setupSidebarButton(javax.swing.JLabel lbl) {
         lbl.setOpaque(true);
@@ -333,8 +351,9 @@ public class MainFrame extends javax.swing.JFrame {
             }
         }
 
-        populateTable(results);
+   
         enableViewAll();
+        updateTableView();
 
     }
     
@@ -446,17 +465,6 @@ public class MainFrame extends javax.swing.JFrame {
         // === Text container (VERTICALLY CENTERED) ===
         javax.swing.JPanel textPanel = new javax.swing.JPanel();
         textPanel.setOpaque(false);
-//        textPanel.setLayout(new java.awt.GridBagLayout());
-//
-//        java.awt.GridBagConstraints gbc = new java.awt.GridBagConstraints();
-//        gbc.gridx = 0;
-//        gbc.gridy = 0;
-//        gbc.anchor = java.awt.GridBagConstraints.WEST;
-//        gbc.insets = new java.awt.Insets(0, 0, 0, 0);
-//        textPanel.add(lblTitle, gbc);
-//
-//        gbc.gridy++;
-//        textPanel.add(lblMeta, gbc);
 
         textPanel.setLayout(new javax.swing.BoxLayout(
                 textPanel, javax.swing.BoxLayout.Y_AXIS
@@ -651,6 +659,123 @@ public class MainFrame extends javax.swing.JFrame {
         // Exit without saving OR after saving
         System.exit(0);
     }
+    
+    
+    
+    private void refreshTable(java.util.List<core.Collection> data) {
+
+        javax.swing.table.DefaultTableModel model =
+                (javax.swing.table.DefaultTableModel) tblMedia.getModel();
+
+        // Clear existing rows
+        model.setRowCount(0);
+
+        // Repopulate table
+        for (core.Collection c : data) {
+
+            Object[] row = {
+                c.getId(),
+                c.getTitle(),
+                c.getCategory(),
+                c.getGenre(),
+                c.getYear(),
+                c.getRating(),
+                c.getViews()
+            };
+
+            model.addRow(row);
+        }
+    }
+    
+
+    
+    private void updateTableView() {
+
+        // Start from MASTER data
+        java.util.List<core.Collection> workingList =
+                new java.util.ArrayList<>(collection.getAll());
+
+        // Apply CATEGORY filter
+        String category = cmbCategoryFilter.getSelectedItem().toString();
+        if (!category.contains("All")) {
+            workingList.removeIf(c ->
+                !c.getCategory().equalsIgnoreCase(category)
+            );
+        }
+
+        // Apply SEARCH filter
+        String keyword = txtSearch.getText().trim().toLowerCase();
+        if (!searchPlaceholderActive && !keyword.isEmpty()) {
+            workingList.removeIf(c ->
+                !(c.getTitle().toLowerCase().contains(keyword)
+                  || c.getGenre().toLowerCase().contains(keyword)
+                  || String.valueOf(c.getYear()).contains(keyword))
+            );
+        }
+
+        // Apply SORT
+        java.util.Comparator<core.Collection> comparator = getSelectedComparator();
+        if (comparator != null) {
+            workingList.sort(comparator);
+        }
+
+        // Update UI
+        refreshTable(workingList);
+    }
+    
+    private java.util.Comparator<core.Collection> getSelectedComparator() {
+
+        return switch (cmbSort.getSelectedIndex()) {
+
+            case 1 -> java.util.Comparator.comparing(
+                core.Collection::getTitle,
+                String.CASE_INSENSITIVE_ORDER
+            );
+
+            case 2 -> java.util.Comparator.comparing(
+                core.Collection::getTitle,
+                String.CASE_INSENSITIVE_ORDER
+            ).reversed();
+
+            case 3 -> java.util.Comparator.comparingInt(
+                core.Collection::getYear
+            );
+
+            case 4 -> java.util.Comparator.comparingInt(
+                core.Collection::getYear
+            ).reversed();
+
+            case 5 -> java.util.Comparator.comparingDouble(
+                core.Collection::getRating
+            ).reversed();
+
+            case 6 -> java.util.Comparator.comparingDouble(
+                core.Collection::getRating
+            );
+
+            case 7 -> java.util.Comparator.comparingInt(
+                core.Collection::getViews
+            ).reversed();
+
+            case 8 -> java.util.Comparator.comparingInt(
+                core.Collection::getViews
+            );
+
+            case 9 -> java.util.Comparator.comparing(
+                core.Collection::getCategory,
+                String.CASE_INSENSITIVE_ORDER
+            );
+
+            default -> null;
+        };
+    }
+
+
+
+
+    
+    
+
 
 
 
@@ -665,7 +790,7 @@ public class MainFrame extends javax.swing.JFrame {
      * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
@@ -684,6 +809,8 @@ public class MainFrame extends javax.swing.JFrame {
         btnDeleteMedia = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblMedia = new javax.swing.JTable();
+        cmbSort = new javax.swing.JComboBox<>();
+        cmbCategoryFilter = new javax.swing.JComboBox<>();
         panelEvaluation = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         cmbEvalType = new javax.swing.JComboBox<>();
@@ -702,7 +829,7 @@ public class MainFrame extends javax.swing.JFrame {
         setTitle("Movie Collection Manager");
         setBackground(new java.awt.Color(31, 60, 136));
         setLocationByPlatform(true);
-        setPreferredSize(new java.awt.Dimension(1100, 650));
+        setPreferredSize(new java.awt.Dimension(1600, 650));
         setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(31, 60, 136));
@@ -867,6 +994,10 @@ public class MainFrame extends javax.swing.JFrame {
         tblMedia.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(tblMedia);
 
+        cmbSort.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Sort by", "Title (A–Z)", "Title (Z–A)", "Year (Ascending)", "Year (Descending)", "Rating (High → Low)", "Rating (Low → High)", "Views (High → Low)", "Views (Low → High)", "Category (A–Z)" }));
+
+        cmbCategoryFilter.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Filter By All Category", "Movie", "Show", "Documentary" }));
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -874,25 +1005,29 @@ public class MainFrame extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane1)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1033, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(btnAddMedia, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnViewAll, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnAddMedia, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(20, 20, 20)
+                        .addComponent(btnViewAll, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(20, 20, 20)
+                        .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnUpdateMedia, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnDeleteMedia, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(88, Short.MAX_VALUE))
+                        .addGap(20, 20, 20)
+                        .addComponent(btnUpdateMedia, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(20, 20, 20)
+                        .addComponent(btnDeleteMedia, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(cmbCategoryFilter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(cmbSort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(18, 18, 18)
+                .addGap(16, 16, 16)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(btnSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -902,8 +1037,10 @@ public class MainFrame extends javax.swing.JFrame {
                             .addComponent(btnViewAll, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(btnDeleteMedia, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnUpdateMedia, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(18, 18, 18)
+                        .addComponent(btnUpdateMedia, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cmbSort, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cmbCategoryFilter, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -1009,9 +1146,9 @@ public class MainFrame extends javax.swing.JFrame {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(panelMedia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(panelEvaluation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(panelEvaluation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(panelContent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
@@ -1026,44 +1163,50 @@ public class MainFrame extends javax.swing.JFrame {
                         .addComponent(panelMedia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(0, 216, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
-                .addGap(176, 176, 176)
+                .addGap(91, 91, 91)
                 .addComponent(panelEvaluation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(230, Short.MAX_VALUE))
+                .addContainerGap(315, Short.MAX_VALUE))
         );
 
         pack();
-    }// </editor-fold>//GEN-END:initComponents
+    }// </editor-fold>                        
 
-    private void txtSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchActionPerformed
+    private void txtSearchActionPerformed(java.awt.event.ActionEvent evt) {                                          
         searchMedia();
-    }//GEN-LAST:event_txtSearchActionPerformed
+    }                                         
 
-    private void btnUpdateMediaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnUpdateMediaMouseClicked
+    private void btnUpdateMediaMouseClicked(java.awt.event.MouseEvent evt) {                                            
         openUpdateMediaDialog();
-    }//GEN-LAST:event_btnUpdateMediaMouseClicked
+    }                                           
 
-    private void btnDeleteMediaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeleteMediaMouseClicked
+    private void btnDeleteMediaMouseClicked(java.awt.event.MouseEvent evt) {                                            
         deleteSelectedMedia();
-    }//GEN-LAST:event_btnDeleteMediaMouseClicked
+    }                                           
 
-    private void btnAddMediaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddMediaMouseClicked
+    private void btnAddMediaMouseClicked(java.awt.event.MouseEvent evt) {                                         
         openAddMediaDialog();
-    }//GEN-LAST:event_btnAddMediaMouseClicked
+    }                                        
 
-    private void btnSearchMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSearchMouseClicked
+    private void btnSearchMouseClicked(java.awt.event.MouseEvent evt) {                                       
         searchMedia();
-    }//GEN-LAST:event_btnSearchMouseClicked
+    }                                      
 
-    private void btnViewAllMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnViewAllMouseClicked
-        loadAllMedia();
+    private void btnViewAllMouseClicked(java.awt.event.MouseEvent evt) {                                        
+        //loadAllMedia();
         initSearchPlaceholder();
         
         // Force focus away from text field
         panelMedia.requestFocusInWindow();
         disableViewAll();
-    }//GEN-LAST:event_btnViewAllMouseClicked
+        
+        //for sort and filter to reset:
+        cmbSort.setSelectedIndex(0);
+        cmbCategoryFilter.setSelectedIndex(0);
+        refreshTable(collection.getAll());
+        
+    }                                       
 
-    private void btnGoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnGoMouseClicked
+    private void btnGoMouseClicked(java.awt.event.MouseEvent evt) {                                   
 
         String selected = cmbEvalType.getSelectedItem().toString();
 
@@ -1083,27 +1226,27 @@ public class MainFrame extends javax.swing.JFrame {
             case "Most Viewed Shows" -> displayTopShows();
             case "Top Rated Documentaries" -> displayTopDocumentaries();
         }
-    }//GEN-LAST:event_btnGoMouseClicked
+    }                                  
 
-    private void menuLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuLoadActionPerformed
+    private void menuLoadActionPerformed(java.awt.event.ActionEvent evt) {                                         
         // TODO add your handling code here
         loadFromFile();
-    }//GEN-LAST:event_menuLoadActionPerformed
+    }                                        
 
-    private void menuSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuSaveActionPerformed
+    private void menuSaveActionPerformed(java.awt.event.ActionEvent evt) {                                         
         // TODO add your handling code here:
         saveToFile();
-    }//GEN-LAST:event_menuSaveActionPerformed
+    }                                        
 
-    private void menuExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuExitActionPerformed
+    private void menuExitActionPerformed(java.awt.event.ActionEvent evt) {                                         
         // TODO add your handling code here:
         confirmExit();
-    }//GEN-LAST:event_menuExitActionPerformed
+    }                                        
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {                                           
         AboutDialog dialog = new AboutDialog(this, true);
         dialog.setVisible(true);
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+    }                                          
 
     /**
      * @param args the command line arguments
@@ -1132,7 +1275,7 @@ public class MainFrame extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(() -> new MainFrame().setVisible(true));
     }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
+    // Variables declaration - do not modify                     
     private javax.swing.JLabel btnAddMedia;
     private javax.swing.JLabel btnDeleteMedia;
     private javax.swing.JLabel btnEval;
@@ -1141,7 +1284,9 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JLabel btnSearch;
     private javax.swing.JLabel btnUpdateMedia;
     private javax.swing.JLabel btnViewAll;
+    private javax.swing.JComboBox<String> cmbCategoryFilter;
     private javax.swing.JComboBox<String> cmbEvalType;
+    private javax.swing.JComboBox<String> cmbSort;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -1162,5 +1307,5 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JPanel panelMedia;
     private javax.swing.JTable tblMedia;
     private javax.swing.JTextField txtSearch;
-    // End of variables declaration//GEN-END:variables
+    // End of variables declaration                   
 }

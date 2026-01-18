@@ -721,6 +721,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         // Update UI
         refreshTable(workingList);
+        updateViewAllButtonState();
     }
     
     private java.util.Comparator<core.Collection> getSelectedComparator() {
@@ -769,6 +770,27 @@ public class MainFrame extends javax.swing.JFrame {
             default -> null;
         };
     }
+    
+    private boolean isDefaultViewActive() {
+        boolean sortDefault = cmbSort.getSelectedIndex() == 0;
+
+        // Your filter default label is "Filter By All Category" at index 0
+        boolean filterDefault = cmbCategoryFilter.getSelectedIndex() == 0;
+
+        boolean searchDefault = searchPlaceholderActive || txtSearch.getText().trim().isEmpty();
+
+        return sortDefault && filterDefault && searchDefault;
+    }
+    
+    private void updateViewAllButtonState() {
+        if (isDefaultViewActive()) {
+            disableViewAll();
+        } else {
+            enableViewAll();
+        }
+    }
+
+
 
 
 
@@ -1192,17 +1214,21 @@ public class MainFrame extends javax.swing.JFrame {
     }                                      
 
     private void btnViewAllMouseClicked(java.awt.event.MouseEvent evt) {                                        
-        //loadAllMedia();
+    	if (!btnViewAll.isEnabled()) {
+    		return; 
+    	}
+    		
         initSearchPlaceholder();
         
         // Force focus away from text field
         panelMedia.requestFocusInWindow();
-        disableViewAll();
         
         //for sort and filter to reset:
         cmbSort.setSelectedIndex(0);
         cmbCategoryFilter.setSelectedIndex(0);
         refreshTable(collection.getAll());
+        
+        updateViewAllButtonState();
         
     }                                       
 

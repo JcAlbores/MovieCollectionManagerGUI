@@ -1,0 +1,20 @@
+id,title,category,subtype,genre,year,rating,views,extra1,extra2
+1,Inception,MOVIE,blockbuster,Sci-Fi,2010,9.1,120,,
+2,Interstellar,MOVIE,blockbuster,Sci-Fi,2014,9.9,110,,
+3,Parasite,MOVIE,indie,Thriller,2019,8.6,95,,
+4,Whiplash,MOVIE,indie,Drama,2014,8.5,70,,
+5,The Godfather,MOVIE,classic,Crime,1972,9.2,140,,
+6,Breaking Bad,SHOW,,Crime,2008,9.5,220,5,62
+7,Stranger Things,SHOW,,Sci-Fi,2016,8.8,180,4,34
+8,The Office,SHOW,,Comedy,2005,8.9,160,9,201
+9,Game of Thrones,SHOW,,Fantasy,2011,8.4,210,8,73
+10,Dark,SHOW,,Sci-Fi,2017,8.7,150,3,26
+11,Planet Earth,DOCUMENTARY,,Nature,2006,9.3,140,Wildlife,
+12,Free Solo,DOCUMENTARY,,Adventure,2018,8.4,65,Mountaineering,
+13,The Social Dilemma,DOCUMENTARY,,Technology,2020,8.1,70,Social Media,
+14,Blackfish,DOCUMENTARY,,Environment,2013,8.15,60,Animal Rights,
+15,Inside Job,DOCUMENTARY,,Economics,2010,8.2,55,Financial Crisis,
+16,Avengers: Endgame,MOVIE,blockbuster,Action/Scifi,2019,10.0,206,,
+18,TestShow,SHOW,,TestGenre,2025,8.67,0,2,25
+19,TestDoc,DOCUMENTARY,,TestGenre,2025,5.9,10,Nature,
+20,TestMobie,MOVIE,indie,Test,2014,9.9,0,,

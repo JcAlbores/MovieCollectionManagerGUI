@@ -791,11 +791,6 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
 
-
-
-
-
-    
     
 
 
@@ -815,7 +810,7 @@ public class MainFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
+        panelSidebar = new javax.swing.JPanel();
         btnMedia = new javax.swing.JLabel();
         btnEval = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
@@ -851,12 +846,11 @@ public class MainFrame extends javax.swing.JFrame {
         setTitle("Movie Collection Manager");
         setBackground(new java.awt.Color(31, 60, 136));
         setLocationByPlatform(true);
-        setPreferredSize(new java.awt.Dimension(1600, 650));
         setResizable(false);
 
-        jPanel1.setBackground(new java.awt.Color(31, 60, 136));
-        jPanel1.setName("panelSidebar"); // NOI18N
-        jPanel1.setPreferredSize(new java.awt.Dimension(220, 650));
+        panelSidebar.setBackground(new java.awt.Color(31, 60, 136));
+        panelSidebar.setName("panelSidebar"); // NOI18N
+        panelSidebar.setPreferredSize(new java.awt.Dimension(220, 650));
 
         btnMedia.setBackground(new java.awt.Color(105, 125, 175));
         btnMedia.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -887,18 +881,18 @@ public class MainFrame extends javax.swing.JFrame {
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setText("MCM");
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout panelSidebarLayout = new javax.swing.GroupLayout(panelSidebar);
+        panelSidebar.setLayout(panelSidebarLayout);
+        panelSidebarLayout.setHorizontalGroup(
+            panelSidebarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(btnMedia, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(btnEval, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
-            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(btnEval, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
             .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        panelSidebarLayout.setVerticalGroup(
+            panelSidebarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelSidebarLayout.createSequentialGroup()
                 .addGap(42, 42, 42)
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -907,8 +901,10 @@ public class MainFrame extends javax.swing.JFrame {
                 .addComponent(btnMedia, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btnEval, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(370, Short.MAX_VALUE))
+                .addContainerGap(251, Short.MAX_VALUE))
         );
+
+        getContentPane().add(panelSidebar, java.awt.BorderLayout.WEST);
 
         panelContent.setBackground(new java.awt.Color(245, 247, 250));
         panelContent.setLayout(new java.awt.CardLayout());
@@ -990,6 +986,7 @@ public class MainFrame extends javax.swing.JFrame {
         });
 
         jScrollPane1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(31, 60, 136)));
+        jScrollPane1.setPreferredSize(null);
 
         tblMedia.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -1027,7 +1024,7 @@ public class MainFrame extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1033, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 998, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(btnAddMedia, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(20, 20, 20)
@@ -1044,7 +1041,7 @@ public class MainFrame extends javax.swing.JFrame {
                         .addComponent(cmbCategoryFilter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(cmbSort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(16, Short.MAX_VALUE))
+                .addContainerGap(57, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1064,10 +1061,12 @@ public class MainFrame extends javax.swing.JFrame {
                         .addComponent(cmbCategoryFilter, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(96, Short.MAX_VALUE))
         );
 
         panelMedia.add(jPanel2, java.awt.BorderLayout.CENTER);
+
+        panelContent.add(panelMedia, "card2");
 
         jLabel3.setText("Choose evaluation type:");
 
@@ -1101,7 +1100,7 @@ public class MainFrame extends javax.swing.JFrame {
                         .addComponent(cmbEvalType, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(btnGo, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(393, Short.MAX_VALUE))
+                .addContainerGap(242, Short.MAX_VALUE))
         );
         panelEvaluationLayout.setVerticalGroup(
             panelEvaluationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1114,8 +1113,12 @@ public class MainFrame extends javax.swing.JFrame {
                     .addComponent(cmbEvalType))
                 .addGap(36, 36, 36)
                 .addComponent(panelEvalResults, javax.swing.GroupLayout.PREFERRED_SIZE, 344, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(50, Short.MAX_VALUE))
+                .addContainerGap(121, Short.MAX_VALUE))
         );
+
+        panelContent.add(panelEvaluation, "card3");
+
+        getContentPane().add(panelContent, java.awt.BorderLayout.CENTER);
 
         jMenu1.setText("File");
 
@@ -1160,36 +1163,6 @@ public class MainFrame extends javax.swing.JFrame {
 
         setJMenuBar(jMenuBar1);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(panelMedia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(panelEvaluation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(panelContent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 706, Short.MAX_VALUE)
-                        .addComponent(panelContent, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(22, 22, 22)
-                        .addComponent(panelMedia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(0, 216, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(91, 91, 91)
-                .addComponent(panelEvaluation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(315, Short.MAX_VALUE))
-        );
-
         pack();
     }// </editor-fold>                        
 
@@ -1214,21 +1187,17 @@ public class MainFrame extends javax.swing.JFrame {
     }                                      
 
     private void btnViewAllMouseClicked(java.awt.event.MouseEvent evt) {                                        
-    	if (!btnViewAll.isEnabled()) {
-    		return; 
-    	}
-    		
+        //loadAllMedia();
         initSearchPlaceholder();
         
         // Force focus away from text field
         panelMedia.requestFocusInWindow();
+        disableViewAll();
         
         //for sort and filter to reset:
         cmbSort.setSelectedIndex(0);
         cmbCategoryFilter.setSelectedIndex(0);
         refreshTable(collection.getAll());
-        
-        updateViewAllButtonState();
         
     }                                       
 
@@ -1319,7 +1288,6 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPopupMenu.Separator jSeparator1;
@@ -1331,6 +1299,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JPanel panelEvalResults;
     private javax.swing.JPanel panelEvaluation;
     private javax.swing.JPanel panelMedia;
+    private javax.swing.JPanel panelSidebar;
     private javax.swing.JTable tblMedia;
     private javax.swing.JTextField txtSearch;
     // End of variables declaration                   

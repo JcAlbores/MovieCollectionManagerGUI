@@ -7,27 +7,41 @@ import core.CollectionManager;
 import core.Movie;
 import java.util.List;
 import javax.swing.JOptionPane;
+
 /**
+ * EvaluateMoviesDialog
+ *
+ * A modal dialog that allows the user to evaluate and retrieve
+ * the top-rated movies released in a specific year.
  *
  * @author carlo
  */
 public class EvaluateMoviesDialog extends javax.swing.JDialog {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(EvaluateMoviesDialog.class.getName());
-    private final CollectionManager collection;
-    private List<Movie> results;
+	// Logger instance for logging errors and exceptions
+	private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(EvaluateMoviesDialog.class.getName());
+    
+	// Reference to the central collection manager
+	private final CollectionManager collection;
+    
+	// Stores the evaluation results (top movies for a given year)
+	private List<Movie> results;
 
     /**
-     * Creates new form EvaluateMoviesDialog
+     * Creates new form EvaluateMoviesDialog with parameters:
+     * parent = the parent frame
+     * modal = determines whether the dialog is modal
+     * collection = the collection manager containing movie data
      */
     public EvaluateMoviesDialog(java.awt.Frame parent, boolean modal, CollectionManager collection) {
-        super(parent, modal);
-        this.collection = collection;
-        initComponents();
-        setTitle("Top Movies by Year");
-        setLocationRelativeTo(parent);
+        super(parent, modal); // Call superclass constructor
+        this.collection = collection; // Store reference to collection manager
+        initComponents(); // Initialize GUI components
+        setTitle("Top Movies by Year"); // Set dialog title
+        setLocationRelativeTo(parent); // Center dialog relative to parent
     }
     
+    // Returns the list of evaluated movies. Used by the calling class after the dialog closes.
     public List<Movie> getResults() {
         return results;
     }
@@ -41,27 +55,39 @@ public class EvaluateMoviesDialog extends javax.swing.JDialog {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-
+    	
+    	// Label for year input
         jLabel1 = new javax.swing.JLabel();
+        
+        // Header panel and labels
         panelHeader = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
+        
+        // Input field for year
         txtYear = new javax.swing.JTextField();
+        
+        // Action buttons
         btnEvaluate = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
-
+        
+        // Configure dialog close behavior
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-
+        
+        // Year input label
         jLabel1.setText("* Enter Year:");
-
+        
+        // Header panel styling
         panelHeader.setBackground(new java.awt.Color(31, 60, 136));
-
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        
+        // Header title label
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 18));
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setText("Top Movies by Year Evaluation");
-
-        jLabel7.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
+        
+        // Header subtitle label
+        jLabel7.setFont(new java.awt.Font("Segoe UI", 2, 12));
         jLabel7.setForeground(new java.awt.Color(255, 255, 255));
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel7.setText("Required fields are marked with an asterisk");
@@ -89,7 +115,8 @@ public class EvaluateMoviesDialog extends javax.swing.JDialog {
                 .addComponent(jLabel7)
                 .addContainerGap(20, Short.MAX_VALUE))
         );
-
+        
+        // Evaluate button configuration
         btnEvaluate.setBackground(new java.awt.Color(76, 175, 80));
         btnEvaluate.setForeground(new java.awt.Color(255, 255, 255));
         btnEvaluate.setText("Evaluate");
@@ -98,7 +125,8 @@ public class EvaluateMoviesDialog extends javax.swing.JDialog {
                 btnEvaluateActionPerformed(evt);
             }
         });
-
+        
+        // Cancel button configuration
         btnCancel.setBackground(new java.awt.Color(244, 66, 53));
         btnCancel.setForeground(new java.awt.Color(255, 255, 255));
         btnCancel.setText("Cancel");
@@ -107,7 +135,8 @@ public class EvaluateMoviesDialog extends javax.swing.JDialog {
                 btnCancelActionPerformed(evt);
             }
         });
-
+        
+        // Layout setup for dialog
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -144,23 +173,31 @@ public class EvaluateMoviesDialog extends javax.swing.JDialog {
                 .addGap(35, 35, 35))
         );
 
-        pack();
+        pack(); // Resize dialog to fit components
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
-        dispose();
+        dispose(); // Close and release dialog resources
     }//GEN-LAST:event_btnCancelActionPerformed
 
+    /*
+     * Handles Evaluate button click.
+     * Validates the year input, retrieves top movies from the collection,
+     * and stores the results for later use.
+     */
     private void btnEvaluateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEvaluateActionPerformed
         try {
+        	// Parse and validate year input
             int year = Integer.parseInt(txtYear.getText().trim());
 
             if (year < 1900 || year > 2100) {
                 throw new IllegalArgumentException("Enter a valid year (1900–2100).");
             }
-
+            
+            // Retrieve top movies for the specified year
             results = collection.getTopMoviesByYear(year);
-
+            
+            // Handle case where no movies are found
             if (results.isEmpty()) {
                 JOptionPane.showMessageDialog(
                     this,
@@ -174,6 +211,7 @@ public class EvaluateMoviesDialog extends javax.swing.JDialog {
             dispose(); // close dialog
 
         } catch (NumberFormatException e) {
+        	// Handle non-numeric year input
             JOptionPane.showMessageDialog(
                 this,
                 "Please enter a valid numeric year.",
@@ -181,6 +219,7 @@ public class EvaluateMoviesDialog extends javax.swing.JDialog {
                 JOptionPane.ERROR_MESSAGE
             );
         } catch (Exception e) {
+        	// Handle other runtime errors
             JOptionPane.showMessageDialog(
                 this,
                 e.getMessage(),

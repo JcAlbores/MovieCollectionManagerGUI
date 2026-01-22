@@ -32,10 +32,13 @@ public class Main {
     }
     
     public void startCLI() {
+    	// Load existing movie collection data from csv
         loadData();
-
+        
+        // Flag to control the main program loop
         boolean running = true;
 
+        // Main loop that keeps the CLI running until the user chooses to exit
         while (running) {
             System.out.println("\n===== MOVIE COLLECTION MANAGER =====");
             System.out.println("1) Media Management");
@@ -43,20 +46,25 @@ public class Main {
             System.out.println("3) File Operations");
             System.out.println("0) Save and Exit");
 
+            // Prompt the user to enter a menu option and store the choice
             int choice = promptInt("Choose an option");
 
+            // Handle the user's menu selection using a switch expression
             switch (choice) {
                 case 1 -> mediaMenu();
                 case 2 -> evaluationMenu();
                 case 3 -> fileMenu();
                 case 0 -> {
-                    saveData();
-                    running = false;
+                    saveData();  // Persist current data before exiting
+                    running = false; // Exit the main loop
                 }
+                
+                // Handle invalid menu selections
                 default -> System.out.println("Invalid option. Please try again.");
             }
         }
-
+        
+        // Close the scanner to release system resources
         scanner.close();
         System.out.println("Sad to see you go :( See you soon!");
     }

@@ -450,7 +450,10 @@ public class UpdateMediaDialog extends javax.swing.JDialog {
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
         dispose();
     }//GEN-LAST:event_btnCancelActionPerformed
-
+    
+    /**
+     * Updates visible panels when media type changes.
+     */
     private void cmbTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbTypeActionPerformed
         updateMediaTypePanels();
     }//GEN-LAST:event_cmbTypeActionPerformed
@@ -558,7 +561,7 @@ public class UpdateMediaDialog extends javax.swing.JDialog {
             }
         }
 
-        return true; // ✅ all validations passed
+        return true; //all validations passed
     }
 
     private void showError(String message) {
@@ -570,7 +573,9 @@ public class UpdateMediaDialog extends javax.swing.JDialog {
         );
     }
     
-    
+    /**
+     * Hides all media-specific panels.
+     */
     private void hideTypePanels() {
         panelMovieFields.setVisible(false);
         panelShowFields.setVisible(false);
@@ -581,10 +586,15 @@ public class UpdateMediaDialog extends javax.swing.JDialog {
         cmbType.setEnabled(false);
     }
     
+    /**
+     * Loads existing media data into the form
+     * and disables non-editable fields.
+     */
     private void loadMediaData() {
 
         core.Collection c = collection.getById(mediaId);
-
+        
+        // Populate common fields
         txtTitle.setText(c.getTitle());
         txtGenre.setText(c.getGenre());
         txtYear.setText(String.valueOf(c.getYear()));
@@ -597,7 +607,7 @@ public class UpdateMediaDialog extends javax.swing.JDialog {
         cmbType.setEnabled(false);
         
         
-
+        // Load type-specific data
         if (c instanceof core.Movie m) {
             cmbType.setSelectedItem("Movie");
             updateMediaTypePanels(); 
@@ -628,6 +638,9 @@ public class UpdateMediaDialog extends javax.swing.JDialog {
         return text.substring(0, 1).toUpperCase() + text.substring(1);
     }
     
+    /**
+     * Shows the appropriate panel based on media type.
+     */
     private void updateMediaTypePanels() {
 
         panelMovieFields.setVisible(false);
@@ -646,12 +659,6 @@ public class UpdateMediaDialog extends javax.swing.JDialog {
         revalidate();
         repaint();
     }
-
-
-
-
-
-
 
 
     /**

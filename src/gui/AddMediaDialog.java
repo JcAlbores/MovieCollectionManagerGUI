@@ -445,6 +445,12 @@ public class AddMediaDialog extends javax.swing.JDialog {
         dispose(); // close dialog
     }//GEN-LAST:event_btnCancelActionPerformed
     
+    
+    
+    /**
+     * Configures the rating spinner to allow decimal values
+     * between 0.0 and 10.0 with step increments of 0.1.
+     */
     private void initRatingSpinner() {
         javax.swing.SpinnerNumberModel ratingModel =
                 new javax.swing.SpinnerNumberModel(5.0, 0.0, 10.0, 0.1);
@@ -456,18 +462,28 @@ public class AddMediaDialog extends javax.swing.JDialog {
         spnRating.setEditor(editor);
     }
     
+    /**
+     * Initializes event handling for media type selection.
+     */
     private void initTypeHandling() {
         cmbType.addActionListener(e -> updateTypeFields());
-        updateTypeFields(); // ensure correct state on open
+        updateTypeFields(); // ensure correct initial state
     }
     
+    /**
+     * Shows or hides media-specific input panels
+     * based on the selected media type.
+     */
     private void updateTypeFields() {
         String type = cmbType.getSelectedItem().toString();
-
+        
+        
+        // Hide all panels first
         panelMovieFields.setVisible(false);
         panelShowFields.setVisible(false);
         panelDocFields.setVisible(false);
 
+        // Show relevant panel
         switch (type) {
             case "Movie" -> panelMovieFields.setVisible(true);
             case "Show" -> panelShowFields.setVisible(true);
@@ -476,11 +492,13 @@ public class AddMediaDialog extends javax.swing.JDialog {
                 // "Select media type" → show nothing
             }
         }
-
+        
+        // Refresh layout after visibility changes
         panelForm.revalidate();
         panelForm.repaint();
     }
     
+    //method to validate user inputs
     private boolean validateInputs() {
 
         // ===== COMMON FIELDS =====
@@ -551,9 +569,14 @@ public class AddMediaDialog extends javax.swing.JDialog {
             }
         }
 
-        return true; // ✅ all validations passed
+        return true; 
     }
-
+    
+    /**
+     * Displays an error message dialog.
+     *
+     * @param message the error message to display
+     */
     private void showError(String message) {
         javax.swing.JOptionPane.showMessageDialog(
             this,
@@ -587,22 +610,7 @@ public class AddMediaDialog extends javax.swing.JDialog {
         }
         //</editor-fold>
 
-        /* Create and display the dialog */
-        /*
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                AddMediaDialog dialog = new AddMediaDialog(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
-        */
+
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

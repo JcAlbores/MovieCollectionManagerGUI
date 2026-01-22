@@ -546,7 +546,7 @@ public class AddMediaDialog extends javax.swing.JDialog {
                 }
             }
 
-
+            // Show creation logic
             case "Show" -> {
                 try {
                     int seasons = Integer.parseInt(txtSeasons.getText().trim());
@@ -561,6 +561,7 @@ public class AddMediaDialog extends javax.swing.JDialog {
                 }
             }
 
+            // Documentary creation logic
             case "Documentary" -> {
                 if (txtSubject.getText().trim().isEmpty()) {
                     showError("Documentary subject cannot be empty.");

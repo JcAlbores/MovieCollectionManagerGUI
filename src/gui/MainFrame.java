@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package gui;
 import core.CollectionManager;
 import core.Collection;
@@ -11,31 +7,52 @@ import core.Collection;
  *
  * @author carlo
  */
-
+//UI-related imports
 import java.awt.Color;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-
+/**
+ * MainFrame
+ *
+ * The primary GUI window of the Movie Collection Manager (MCM).
+ * This class acts as the central controller for:
+ *  - Media management
+ *  - Searching, filtering, and sorting
+ *  - Evaluations and rankings
+ *  - File operations
+ *
+ * It follows a clear separation of concerns where:
+ *  - GUI logic is handled here
+ *  - Business logic is delegated to CollectionManager
+ *
+ * @author carlo
+ */
 public class MainFrame extends javax.swing.JFrame {
-    
+	// Logger for runtime diagnostics
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(MainFrame.class.getName());
+    
+    // Primary application color (used consistently across UI)
     private final Color PRIMARY_COLOR = new Color(31, 60, 136); // #1F3C88
+    
+    // Backend data manager
     private CollectionManager collection;
+    
+    // Data file used for persistence
     private static final String DATA_FILE = "MovieCollection.csv";
+    
+    // Search placeholder constants
     private static final String SEARCH_PLACEHOLDER = "Type here to search...";
     private final Color PLACEHOLDER_COLOR = new Color(150, 150, 150);
     private final Color NORMAL_TEXT_COLOR = Color.BLACK;
+    
     private boolean searchPlaceholderActive = true; //Track search placeholder to not only rely on
-
-
-
 
     
     // ================= SIDEBAR COLORS =================
-    private final Color SIDEBAR_BG = new Color(31, 60, 136);   // #1F3C88
+    private final Color SIDEBAR_BG = new Color(31, 60, 136);
     private final Color HOVER_BG   = new Color(105,125,175);
-    private final Color ACTIVE_BG  = new Color(46, 196, 182);  // #2EC4B6 //(22, 49, 114);   // #163172 
+    private final Color ACTIVE_BG  = new Color(46, 196, 182);  
     
     private javax.swing.JLabel activeButton = null;
     
@@ -43,14 +60,18 @@ public class MainFrame extends javax.swing.JFrame {
 
     
     /**
-     * Creates new form MainFrame
+     * Constructor for MainFrame
+     *
+     * Initializes backend, UI components, event listeners,
+     * and loads persisted data.
      */
     public MainFrame() {
-
+    	// Initialize backend collection manager
         collection = new CollectionManager();
-        
+        // Initialize GUI components (NetBeans generated)
         initComponents();
         
+        // Override default close behavior with confirmation dialog
         addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent e) {
@@ -59,7 +80,7 @@ public class MainFrame extends javax.swing.JFrame {
         });
 
         
-        
+        // Initialize UI behavior and listeners
         initSidebarButtons();
         initSortComboBox();
         initCategoryFilter();
@@ -68,29 +89,37 @@ public class MainFrame extends javax.swing.JFrame {
         initTableSelectionListener();
         setupSearchFieldBehavior();
         
+        // Setup card layout for main content panel
         cardLayout = (java.awt.CardLayout) panelContent.getLayout();
 
         loadDataFromFile(); //load csv records
         loadAllMedia(); //populate table
         
+        // Register content panels
         panelContent.add(panelMedia, "MEDIA");
         panelContent.add(panelEvaluation, "EVAL");
         
+        // default view
         setActiveButton(btnMedia);
-        cardLayout.show(panelContent, "MEDIA"); // default view
+        cardLayout.show(panelContent, "MEDIA"); 
         
+        // Initial UI state
         updateActionButtonsState();
         disableViewAll();
-
-
     }
     
     // ================= SIDEBAR SETUP =================
+    /**
+     * Initializes sidebar navigation buttons.
+     */
     private void initSidebarButtons() {
         setupSidebarButton(btnMedia);
         setupSidebarButton(btnEval);
     }
     
+    /**
+     * Attaches sorting behavior to the sort combo box.
+     */
     private void initSortComboBox() {
         cmbSort.addItemListener(e -> {
             if (e.getStateChange() == java.awt.event.ItemEvent.SELECTED) {
@@ -99,6 +128,9 @@ public class MainFrame extends javax.swing.JFrame {
         });
     }
     
+    /**
+     * Attaches filtering behavior to the category filter combo box.
+     */
     private void initCategoryFilter() {
         cmbCategoryFilter.addItemListener(e -> {
             if (e.getStateChange() == java.awt.event.ItemEvent.SELECTED) {
@@ -107,7 +139,9 @@ public class MainFrame extends javax.swing.JFrame {
         });
     }
 
-    
+    /**
+     * Applies hover, active, and click behavior to sidebar labels.
+     */
     private void setupSidebarButton(javax.swing.JLabel lbl) {
         lbl.setOpaque(true);
         lbl.setBackground(SIDEBAR_BG);
@@ -141,15 +175,15 @@ public class MainFrame extends javax.swing.JFrame {
                 } else if (lbl == btnEval) {
                     cardLayout.show(panelContent, "EVAL");
                 } 
-//                else if (lbl == btnFile) {
-//                    cardLayout.show(panelContent, "FILE");
-//                }
+
 
             }
         });
     }
 
-
+    /**
+     * Highlights the currently active sidebar button.
+     */
     private void setActiveButton(javax.swing.JLabel selected) {
         if (activeButton != null) {
             activeButton.setBackground(SIDEBAR_BG);
@@ -158,10 +192,14 @@ public class MainFrame extends javax.swing.JFrame {
         activeButton.setBackground(ACTIVE_BG);
     }
     
+    /**
+     * Opens the UpdateMediaDialog for the selected table row.
+     */
     private void openUpdateMediaDialog() {
 
         int selectedRow = tblMedia.getSelectedRow();
 
+        // Ensure a row is selected
         if (selectedRow == -1) {
             JOptionPane.showMessageDialog(
                 this,
@@ -187,14 +225,17 @@ public class MainFrame extends javax.swing.JFrame {
         loadAllMedia(); // refresh table after dialog closes
     }
     
+    /**
+     * Loads all media items into the table.
+     */
     private void loadAllMedia() {
         populateTable(collection.getAll());
         updateActionButtonsState();
-
     }
 
-    
-    
+    /**
+     * Deletes the currently selected media item after confirmation.
+     */
     private void deleteSelectedMedia() {
 
         int selectedRow = tblMedia.getSelectedRow();
@@ -248,7 +289,9 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }
     
-    
+    /**
+     * Loads media records from CSV file.
+     */
     private void loadDataFromFile() {
         try {
             collection.loadFromFile(DATA_FILE);
@@ -277,7 +320,10 @@ public class MainFrame extends javax.swing.JFrame {
         System.out.println("Loaded records: " + collection.getAll().size());
 
     }
-
+    
+    /**
+     * Initializes a non-editable table model.
+     */
     private void initTableModel() {
         DefaultTableModel model = new DefaultTableModel(
             new Object[][]{},
@@ -294,13 +340,18 @@ public class MainFrame extends javax.swing.JFrame {
         tblMedia.setModel(model);
     }
     
+    /**
+     * Sets placeholder text for the search field.
+     */
     private void initSearchPlaceholder() {
         txtSearch.setText(SEARCH_PLACEHOLDER);
         txtSearch.setForeground(PLACEHOLDER_COLOR);
         searchPlaceholderActive = true;
     }
 
-    
+    /**
+     * Opens AddMediaDialog.
+     */
     private void openAddMediaDialog() {
 
         AddMediaDialog dialog = new AddMediaDialog(
@@ -315,6 +366,9 @@ public class MainFrame extends javax.swing.JFrame {
         loadAllMedia(); // refresh table after dialog closes
     }
     
+    /**
+     * Populates the table with collection data.
+     */
     private void populateTable(java.util.List<core.Collection> list) {
 
         DefaultTableModel model = (DefaultTableModel) tblMedia.getModel();
@@ -333,7 +387,9 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }
     
-    
+    /**
+     * Executes keyword-based search.
+     */
     private void searchMedia() {
 
         String keyword = txtSearch.getText().trim().toLowerCase();
@@ -367,6 +423,9 @@ public class MainFrame extends javax.swing.JFrame {
 
     }
     
+    /**
+     * Adds focus and mouse behavior to search field.
+     */
     private void setupSearchFieldBehavior() {
 
         txtSearch.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -391,7 +450,10 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
     }
-
+    
+    /**
+     * Clears placeholder text when user starts typing.
+     */
     private void clearPlaceholderIfNeeded() {
         if (txtSearch.getText().equals(SEARCH_PLACEHOLDER)) {
             txtSearch.setText("");
@@ -400,6 +462,9 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Opens the Top Movies evaluation dialog.
+     */
     private void runTopMoviesEvaluation() {
 
         EvaluateMoviesDialog dialog = new EvaluateMoviesDialog(
@@ -416,13 +481,28 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }
     
-    
+    /**
+     * Clears all evaluation result components from the panel
+     * and refreshes the UI to reflect the empty state.
+     */
     private void clearEvaluationResults() {
         panelEvalResults.removeAll();
         panelEvalResults.revalidate();
         panelEvalResults.repaint();
     }
     
+    /**
+     * Creates a reusable ranking card panel used to display
+     * top-ranked media items in the evaluation view.
+     * Parameters:
+     * rank  =  Ranking position (1st, 2nd, 3rd, etc.)
+     * title =  Media title
+     * category =Media category (Movie, Show, Documentary)
+     * year  =  Release year
+     * rating = Media rating
+     * views =  Number of views
+     * JPanel representing a styled ranking card
+     */
     private javax.swing.JPanel createRankCard(
             int rank,
             String title,
@@ -479,7 +559,8 @@ public class MainFrame extends javax.swing.JFrame {
         textPanel.setLayout(new javax.swing.BoxLayout(
                 textPanel, javax.swing.BoxLayout.Y_AXIS
         ));
-
+        
+        // Push content to vertical center
         textPanel.add(javax.swing.Box.createVerticalGlue());
 
         lblTitle.setAlignmentX(javax.swing.JComponent.LEFT_ALIGNMENT);
@@ -504,6 +585,9 @@ public class MainFrame extends javax.swing.JFrame {
         return card;
     }
 
+    /**
+     * Displays ranked movie evaluation results in the UI.
+     */
     private void displayTopMovies(java.util.List<core.Movie> movies) {
 
         clearEvaluationResults();
@@ -527,6 +611,9 @@ public class MainFrame extends javax.swing.JFrame {
         panelEvalResults.repaint();
     }
 
+    /**
+     * Displays the most viewed TV shows in ranked order.
+     */
     private void displayTopShows() {
 
         clearEvaluationResults();
@@ -547,6 +634,9 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Displays the highest-rated documentaries in ranked order.
+     */
     private void displayTopDocumentaries() {
 
         clearEvaluationResults();
@@ -567,6 +657,11 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }
     
+    
+    /**
+     * Enables or disables Update and Delete buttons
+     * based on the current table row selection state.
+     */
     private void updateActionButtonsState() {
         boolean hasSelection = tblMedia.getSelectedRow() != -1;
 
@@ -583,7 +678,10 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
 
-
+    /**
+     * Attaches a listener to the media table
+     * to track row selection changes.
+     */
     private void initTableSelectionListener() {
 
         tblMedia.getSelectionModel().addListSelectionListener(e -> {
@@ -593,22 +691,35 @@ public class MainFrame extends javax.swing.JFrame {
         });
     }
     
+    /**
+     * Enables the "View All" button and applies active styling.
+     */
     private void enableViewAll() {
         btnViewAll.setEnabled(true);
         btnViewAll.setBackground(new Color(31, 60, 136)); // primary
     }
 
+    /**
+     * Disables the "View All" button and applies disabled styling.
+     */
     private void disableViewAll() {
         btnViewAll.setEnabled(false);
         btnViewAll.setBackground(new Color(180, 180, 180)); // disabled gray
     }
 
-
+    /**
+     * Loads media records from CSV file
+     * and refreshes the table view.
+     */
     private void loadFromFile() {
         loadDataFromFile();   // reuse your existing method
         loadAllMedia();       // refresh the table view
     }
-
+    
+    /**
+     * Saves the current collection state to a CSV file
+     * after user confirmation.
+     */
     private void saveToFile() {
         int confirm = JOptionPane.showConfirmDialog(
             this,
@@ -638,7 +749,9 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }
 
-
+    /**
+     * Confirms application exit and optional save.
+     */
     private void confirmExit() {
 
         Object[] options = {
@@ -670,8 +783,12 @@ public class MainFrame extends javax.swing.JFrame {
         System.exit(0);
     }
     
-    
-    
+    /**
+     * Refreshes the JTable by clearing existing rows
+     * and repopulating it with the provided collection data.
+     *
+     * parameter: data List of Collection objects to be displayed in the table
+     */
     private void refreshTable(java.util.List<core.Collection> data) {
 
         javax.swing.table.DefaultTableModel model =
@@ -698,7 +815,12 @@ public class MainFrame extends javax.swing.JFrame {
     }
     
 
-    
+    /**
+     * Updates the table view by applying filtering, searching,
+     * and sorting logic in a defined order before refreshing the UI.
+     *
+     * This method acts as the central pipeline for table updates.
+     */
     private void updateTableView() {
 
         // Start from MASTER data
@@ -734,53 +856,73 @@ public class MainFrame extends javax.swing.JFrame {
         updateViewAllButtonState();
     }
     
+    /**
+     * Returns the appropriate Comparator based on
+     * the selected sort option in the combo box.
+     */
     private java.util.Comparator<core.Collection> getSelectedComparator() {
 
         return switch (cmbSort.getSelectedIndex()) {
-
+        	
+        	// Sort by Title (A–Z)
             case 1 -> java.util.Comparator.comparing(
                 core.Collection::getTitle,
                 String.CASE_INSENSITIVE_ORDER
             );
-
+            
+            // Sort by Title (Z–A)
             case 2 -> java.util.Comparator.comparing(
                 core.Collection::getTitle,
                 String.CASE_INSENSITIVE_ORDER
             ).reversed();
 
+            // Sort by Year (Ascending)
             case 3 -> java.util.Comparator.comparingInt(
                 core.Collection::getYear
             );
 
+            // Sort by Year (Descending)
             case 4 -> java.util.Comparator.comparingInt(
                 core.Collection::getYear
             ).reversed();
 
+            // Sort by Rating (High → Low)
             case 5 -> java.util.Comparator.comparingDouble(
                 core.Collection::getRating
             ).reversed();
 
+            // Sort by Rating (Low → High)
             case 6 -> java.util.Comparator.comparingDouble(
                 core.Collection::getRating
             );
 
+            // Sort by Views (High → Low)
             case 7 -> java.util.Comparator.comparingInt(
                 core.Collection::getViews
             ).reversed();
 
+            // Sort by Views (Low → High)
             case 8 -> java.util.Comparator.comparingInt(
                 core.Collection::getViews
             );
 
+            // Sort by Category (A–Z)
             case 9 -> java.util.Comparator.comparing(
                 core.Collection::getCategory,
                 String.CASE_INSENSITIVE_ORDER
             );
-
+            
+            // Default: no sorting applied
             default -> null;
         };
     }
     
+    /**
+     * Determines whether the table is currently in its default state,
+     * meaning no sorting, filtering, or searching is applied.
+     *
+     * return true if default view is active, false otherwise
+     */
     private boolean isDefaultViewActive() {
         boolean sortDefault = cmbSort.getSelectedIndex() == 0;
 
@@ -792,6 +934,10 @@ public class MainFrame extends javax.swing.JFrame {
         return sortDefault && filterDefault && searchDefault;
     }
     
+    /**
+     * Enables or disables the "View All" button based on
+     * whether the table is in its default state.
+     */
     private void updateViewAllButtonState() {
         if (isDefaultViewActive()) {
             disableViewAll();
@@ -799,11 +945,6 @@ public class MainFrame extends javax.swing.JFrame {
             enableViewAll();
         }
     }
-
-
-    
-
-
 
 
 

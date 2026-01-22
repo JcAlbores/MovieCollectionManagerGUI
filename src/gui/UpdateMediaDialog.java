@@ -12,18 +12,27 @@ import javax.swing.JOptionPane;
 
 
 /**
- *
- * @author carlo
+ * This UpdateMediaDialog allows the user to update an existing media item's
+ * rating and view (but not modify) other immutable attributes.
  */
 public class UpdateMediaDialog extends javax.swing.JDialog {
     
+	// Logger for runtime error handling
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(UpdateMediaDialog.class.getName());
     
+    // Reference to the main collection manager
     private final CollectionManager collection;
+    
+    // ID of the media item being updated
     private final int mediaId;
 
     /**
-     * Creates new form AddMediaDialog
+     * Constructor for UpdateMediaDialog with the following parameters:
+     *
+     * parent = parent frame
+     * modal = determines modality
+     * collection = shared CollectionManager instance
+     * mediaId = unique identifier of the media to update
      */
     public UpdateMediaDialog(
         java.awt.Frame parent,
@@ -35,9 +44,9 @@ public class UpdateMediaDialog extends javax.swing.JDialog {
             this.collection = collection;
             this.mediaId = mediaId;
             
-            initComponents();
-            hideTypePanels();
-            loadMediaData();
+            initComponents(); // Initialize GUI components
+            hideTypePanels(); // Hide all type-specific panels
+            loadMediaData(); // Load existing media data into the form
         }
 
 
@@ -49,10 +58,12 @@ public class UpdateMediaDialog extends javax.swing.JDialog {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-
+    	// Header panel and labels
         panelHeader = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
+        
+        // Main form panel and common fields
         panelForm = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         txtTitle = new javax.swing.JTextField();
@@ -64,32 +75,42 @@ public class UpdateMediaDialog extends javax.swing.JDialog {
         txtYear = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         spnRating = new javax.swing.JSpinner();
+        
+        // Documentary-specific fields
         panelDocFields = new javax.swing.JPanel();
         jLabel12 = new javax.swing.JLabel();
         txtSubject = new javax.swing.JTextField();
+        
+        // Show-specific fields
         panelShowFields = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
         txtSeasons = new javax.swing.JTextField();
         txtEpisodes = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
+        
+        // Movie-specific fields
         panelMovieFields = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
         cmbMovieType = new javax.swing.JComboBox<>();
+        
+        // Action buttons
         panelActions = new javax.swing.JPanel();
         btnUpdate = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
-
+        
+        // Dialog configuration
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
-
+        
+        // Header styling
         panelHeader.setBackground(new java.awt.Color(31, 60, 136));
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); 
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Update Media");
 
-        jLabel7.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
+        jLabel7.setFont(new java.awt.Font("Segoe UI", 2, 12)); 
         jLabel7.setForeground(new java.awt.Color(255, 255, 255));
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel7.setText("Required fields are marked with an asterisk");
@@ -117,16 +138,18 @@ public class UpdateMediaDialog extends javax.swing.JDialog {
                 .addComponent(jLabel7)
                 .addContainerGap(20, Short.MAX_VALUE))
         );
-
+        // Add header to top of dialog
         getContentPane().add(panelHeader, java.awt.BorderLayout.PAGE_START);
-
+        
+        // Input field labels
         jLabel2.setText("* Title:");
 
         txtTitle.setCaretColor(new java.awt.Color(31, 60, 136));
         txtTitle.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
 
         jLabel3.setText("* Type:");
-
+        
+        // Media type dropdown
         cmbType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Media Type", "Movie", "Show", "Documentary" }));
         cmbType.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -143,7 +166,8 @@ public class UpdateMediaDialog extends javax.swing.JDialog {
         txtYear.setCaretColor(new java.awt.Color(31, 60, 136));
 
         jLabel6.setText("* Rating:");
-
+        
+        // Spinner configuration (rating range)
         spnRating.setModel(new javax.swing.SpinnerNumberModel(0.0d, 0.0d, 10.0d, 0.1d));
 
         jLabel12.setText("* Subject/Topic:");
@@ -206,7 +230,8 @@ public class UpdateMediaDialog extends javax.swing.JDialog {
         );
 
         jLabel8.setText("* Movie Type:");
-
+        
+        // Movie type dropdown
         cmbMovieType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Movie Type", "Indie", "Blockbuster", "Short", "Classic" }));
 
         javax.swing.GroupLayout panelMovieFieldsLayout = new javax.swing.GroupLayout(panelMovieFields);
@@ -288,9 +313,11 @@ public class UpdateMediaDialog extends javax.swing.JDialog {
                 .addComponent(panelDocFields, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(16, Short.MAX_VALUE))
         );
-
+        
+        // Add main form panel
         getContentPane().add(panelForm, java.awt.BorderLayout.CENTER);
-
+        
+        // Update button configuration
         btnUpdate.setBackground(new java.awt.Color(76, 175, 80));
         btnUpdate.setForeground(new java.awt.Color(255, 255, 255));
         btnUpdate.setText("Update");
@@ -299,7 +326,8 @@ public class UpdateMediaDialog extends javax.swing.JDialog {
                 btnUpdateActionPerformed(evt);
             }
         });
-
+        
+        // Cancel button configuration
         btnCancel.setBackground(new java.awt.Color(244, 66, 53));
         btnCancel.setForeground(new java.awt.Color(255, 255, 255));
         btnCancel.setText("Cancel");
@@ -328,12 +356,21 @@ public class UpdateMediaDialog extends javax.swing.JDialog {
                     .addComponent(btnCancel))
                 .addGap(16, 16, 16))
         );
-
+        
+        // Add action panel to bottom
         getContentPane().add(panelActions, java.awt.BorderLayout.PAGE_END);
 
-        pack();
+        pack(); // Fit dialog to content
     }// </editor-fold>//GEN-END:initComponents
 
+    
+    /**
+     * Handles Update button click.
+     *
+     * Updates the rating of the selected media item and validates
+     * type-specific fields without allowing immutable attributes
+     * to be modified.
+     */
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
 
         try {
@@ -348,16 +385,14 @@ public class UpdateMediaDialog extends javax.swing.JDialog {
 
                //Update type-specific fields
                core.Collection c = collection.getById(mediaId);
-
+               
+               //Type-specific validation (fields are final and not editable)
                if (c instanceof core.Movie m) {
 
                    String movieType = cmbMovieType.getSelectedItem().toString();
                    if (movieType.equals("Select movie type")) {
                        throw new IllegalArgumentException("Please select a movie type.");
                    }
-
-                   // movieType is final → cannot change (by design)
-                   // ✔ acceptable and justifiable
 
                } else if (c instanceof core.Show s) {
 
@@ -408,6 +443,10 @@ public class UpdateMediaDialog extends javax.swing.JDialog {
            }
     }//GEN-LAST:event_btnUpdateActionPerformed
 
+    /**
+     * Handles Cancel button click.
+     * Closes the dialog without saving changes.
+     */
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnCancelActionPerformed

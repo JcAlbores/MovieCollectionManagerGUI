@@ -94,7 +94,7 @@ public class AboutDialog extends javax.swing.JDialog {
 
         // Version label
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("Version 2.0");
+        jLabel2.setText("<html><div style=\"width:300px; text-align: center;\">Version 2.0</div></html>");
 
         // Application name label
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 18));

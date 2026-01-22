@@ -8,29 +8,42 @@ import core.CollectionManager;
 import javax.swing.JOptionPane;
 
 /**
+ * AddMediaDialog
+ * 
+ * A modal dialog used to collect user input for adding new media
+ * (Movie, Show, or Documentary) into the CollectionManager.
  *
  * @author carlo
  */
 public class AddMediaDialog extends javax.swing.JDialog {
     
+	// Logger for capturing runtime errors and exceptions
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AddMediaDialog.class.getName());
+    
+    // Reference to the main collection manager (shared application state)
     private final CollectionManager collection;
 
     /**
-     * Creates new form AddMediaDialog
+     * Creates new form AddMediaDialog with parameters:
+     * parent = the parent frame
+     * modal = determines whether the dialog is modal
+     * collection = the collection manager used to store media
      */
     public AddMediaDialog(java.awt.Frame parent, boolean modal, CollectionManager collection) {
-        super(parent, modal);
-        this.collection = collection;
-        initComponents();
-        initRatingSpinner();
+        super(parent, modal); // Call JDialog constructor
+        this.collection = collection; // Store collection reference
+        initComponents(); // Initialize Swing components
+        initRatingSpinner(); // Configure rating spinner
         
         // Hide all type-specific panels by default
         panelMovieFields.setVisible(false);
         panelShowFields.setVisible(false);
         panelDocFields.setVisible(false);
 
+        // Initialize logic for handling media type selection
         initTypeHandling(); 
+        
+        // Set dialog window title
         setTitle("Add Media");
     }
 
@@ -42,10 +55,13 @@ public class AddMediaDialog extends javax.swing.JDialog {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-
+    	
+    	// Header panel and labels
         panelHeader = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
+        
+        // Main form panel and common fields
         panelForm = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         txtTitle = new javax.swing.JTextField();
@@ -57,31 +73,44 @@ public class AddMediaDialog extends javax.swing.JDialog {
         txtYear = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         spnRating = new javax.swing.JSpinner();
+        
+        // Documentary-specific fields
         panelDocFields = new javax.swing.JPanel();
         jLabel12 = new javax.swing.JLabel();
         txtSubject = new javax.swing.JTextField();
+        
+        // Show-specific fields
         panelShowFields = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
         txtSeasons = new javax.swing.JTextField();
         txtEpisodes = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
+        
+        
+        // Movie-specific fields
         panelMovieFields = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
         cmbMovieType = new javax.swing.JComboBox<>();
+        
+        // Action buttons panel
         panelActions = new javax.swing.JPanel();
         btnSave = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
-
+        
+        // Configure dialog behavior
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
-
+        
+        // Header styling
         panelHeader.setBackground(new java.awt.Color(31, 60, 136));
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        // Header title label
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18));
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Add Media");
-
+        
+        // Header subtitle label
         jLabel7.setFont(new java.awt.Font("Segoe UI", 2, 12)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(255, 255, 255));
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -110,9 +139,11 @@ public class AddMediaDialog extends javax.swing.JDialog {
                 .addComponent(jLabel7)
                 .addContainerGap(20, Short.MAX_VALUE))
         );
-
+        
+        // Add header panel to the top of the dialog
         getContentPane().add(panelHeader, java.awt.BorderLayout.PAGE_START);
-
+        
+        // Labels and input field configuration
         jLabel2.setText("* Title:");
 
         txtTitle.setCaretColor(new java.awt.Color(31, 60, 136));
@@ -154,7 +185,8 @@ public class AddMediaDialog extends javax.swing.JDialog {
                     .addComponent(txtSubject, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-
+        
+        // Show fields labels
         jLabel10.setText("* Number of Seasons:");
 
         txtSeasons.setCaretColor(new java.awt.Color(31, 60, 136));
@@ -190,7 +222,7 @@ public class AddMediaDialog extends javax.swing.JDialog {
                     .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtEpisodes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
-
+        // Movie type label and dropdown
         jLabel8.setText("* Movie Type:");
 
         cmbMovieType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Movie Type", "Indie", "Blockbuster", "Short", "Classic" }));
@@ -274,9 +306,11 @@ public class AddMediaDialog extends javax.swing.JDialog {
                 .addComponent(panelDocFields, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(16, Short.MAX_VALUE))
         );
-
+        
+        // Add main form panel to the dialog
         getContentPane().add(panelForm, java.awt.BorderLayout.CENTER);
-
+        
+        // Save button configuration
         btnSave.setBackground(new java.awt.Color(76, 175, 80));
         btnSave.setForeground(new java.awt.Color(255, 255, 255));
         btnSave.setText("Save");
@@ -285,7 +319,8 @@ public class AddMediaDialog extends javax.swing.JDialog {
                 btnSaveActionPerformed(evt);
             }
         });
-
+        
+        // Cancel button configuration
         btnCancel.setBackground(new java.awt.Color(244, 66, 53));
         btnCancel.setForeground(new java.awt.Color(255, 255, 255));
         btnCancel.setText("Cancel");
@@ -314,15 +349,17 @@ public class AddMediaDialog extends javax.swing.JDialog {
                     .addComponent(btnCancel))
                 .addGap(16, 16, 16))
         );
-
+        
+        // Add action panel to the bottom of the dialog
         getContentPane().add(panelActions, java.awt.BorderLayout.PAGE_END);
-
+	        
+	     // Resize dialog to fit components
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
 
-    // 1️⃣ Basic validation
+    // Basic validation
         if (cmbType.getSelectedIndex() == 0) {
             JOptionPane.showMessageDialog(
                 this,
@@ -332,12 +369,15 @@ public class AddMediaDialog extends javax.swing.JDialog {
             );
             return;
         }
-
+        
+        // Retrieve and sanitize common input fields
         String title = txtTitle.getText().trim();
         String genre = txtGenre.getText().trim();
         int year = Integer.parseInt(txtYear.getText().trim());
         double rating = (double) spnRating.getValue();
 
+        
+        // Validate required common fields
         if (title.isEmpty() || genre.isEmpty()) {
             JOptionPane.showMessageDialog(
                 this,
@@ -348,11 +388,13 @@ public class AddMediaDialog extends javax.swing.JDialog {
             return;
         }
 
-        // 2️⃣ Media-type specific logic
+        // Media-type specific logic
         String type = cmbType.getSelectedItem().toString();
 
         try {
             switch (type) {
+            
+            	// Movie creation logic
                 case "Movie" -> {
                     String movieType = cmbMovieType.getSelectedItem().toString();
                     if (movieType.equals("Select movie type")) {
@@ -360,13 +402,15 @@ public class AddMediaDialog extends javax.swing.JDialog {
                     }
                     collection.addMovie(title, genre, year, rating, movieType);
                 }
-
+                
+                // TV Show creation logic
                 case "Show" -> {
                     int seasons = Integer.parseInt(txtSeasons.getText().trim());
                     int episodes = Integer.parseInt(txtEpisodes.getText().trim());
                     collection.addShow(title, genre, year, rating, seasons, episodes);
                 }
 
+                // Documentary creation logic
                 case "Documentary" -> {
                     String subject = txtSubject.getText().trim();
                     if (subject.isEmpty()) {
@@ -375,7 +419,8 @@ public class AddMediaDialog extends javax.swing.JDialog {
                     collection.addDocumentary(title, genre, year, rating, subject);
                 }
             }
-
+            
+            // Success message
             JOptionPane.showMessageDialog(
                 this,
                 "Media added successfully.",
@@ -386,6 +431,7 @@ public class AddMediaDialog extends javax.swing.JDialog {
             dispose(); // close dialog
 
         } catch (Exception ex) {
+        	// Display validation or parsing errors
             JOptionPane.showMessageDialog(
                 this,
                 ex.getMessage(),
@@ -396,7 +442,7 @@ public class AddMediaDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
-        // TODO add your handling code here:
+        dispose(); // close dialog
     }//GEN-LAST:event_btnCancelActionPerformed
     
     private void initRatingSpinner() {

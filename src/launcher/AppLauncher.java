@@ -44,7 +44,7 @@ public class AppLauncher {
             System.out.println(" Movie Collection Manager ");
             System.out.println("==================================");
             System.out.println("1) Launch Graphical Interface (GUI)");
-            System.out.println("2) Launch Text-Based Interface (CLI)");
+            System.out.println("2) Launch Text-Based Interface (TBI)");
             System.out.println("0) Exit");
             System.out.print("Choose option: ");
 

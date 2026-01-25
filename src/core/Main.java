@@ -251,49 +251,61 @@ public class Main {
     
     /**
      * Displays a menu that allows the user to filter media
-     * records by category (Movie, Show, Documentary).
-     * The method loops until the user chooses to go back.
+     * records by category (Movie, Show, or Documentary).
+     *
+     * This method runs in a loop until the user chooses
+     * to return to the previous menu.
      */
     private void filterByCategory() {
 
+        // Controls whether the user exits the filter menu
         boolean back = false;
 
+        // Loop until user selects "Back"
         while (!back) {
+
+            // Display filter options
             System.out.println("\n--- Filter by Category ---");
             System.out.println("1) Movie");
             System.out.println("2) Show");
             System.out.println("3) Documentary");
             System.out.println("0) Back");
 
+            // Read user selection
             int choice = promptInt("Choose an option");
 
+            // Will hold the selected category name
             String category;
 
+            // Map user choice to category
             switch (choice) {
                 case 1 -> category = "Movie";
                 case 2 -> category = "Show";
                 case 3 -> category = "Documentary";
+
+                // Exit filter menu
                 case 0 -> {
                     back = true;
                     continue;
                 }
+
+                // Handle invalid menu selection
                 default -> {
                     System.out.println("Invalid option.");
                     continue;
                 }
             }
 
-            boolean found = false;
+            // Use shared CollectionManager filtering logic
+            // This ensures consistency between CLI and GUI
+            List<Collection> results =
+                    collection.filterByCategory(collection.getAll(), category);
 
-            for (Collection c : collection.getAll()) {
-                if (c.getCategory().equalsIgnoreCase(category)) {
-                    System.out.println(describe(c));
-                    found = true;
-                }
-            }
-
-            if (!found) {
+            // Display results or notify if none found
+            if (results.isEmpty()) {
                 System.out.println("No records found.");
+            } else {
+                results.forEach(c -> System.out.println(describe(c)));
             }
         }
     }

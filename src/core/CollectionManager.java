@@ -76,6 +76,38 @@ public class CollectionManager {
     }
     
     /**
+     * Filters a list of media items by category.
+     *
+     * This method performs a non-destructive filter by creating
+     * a defensive copy of the provided list before applying
+     * category-based filtering.
+     *
+     * @param source   the source list of Collection objects to filter
+     * @param category the category to filter by (Movie, Show, Documentary, or "All")
+     * @return a new list containing only items that match the given category
+     */
+    public List<Collection> filterByCategory(List<Collection> source, String category) {
+
+        // Defensive copy so the original list is not modified
+        List<Collection> filtered = new ArrayList<>(source);
+
+        // If no category is specified or "All" is selected,
+        // return the full list without filtering
+        if (category == null || category.equalsIgnoreCase("All")) {
+            return filtered;
+        }
+
+        // Remove items that do NOT match the selected category (case-insensitive)
+        filtered.removeIf(c ->
+            !c.getCategory().equalsIgnoreCase(category)
+        );
+
+        // Return the filtered result list
+        return filtered;
+    }
+
+    
+    /**
      * Returns a sorted copy of the provided collection list based on the given sort key.
      *
      * This overloaded version allows sorting of any supplied list (e.g. filtered or searched results)

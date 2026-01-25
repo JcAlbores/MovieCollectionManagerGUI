@@ -39,6 +39,8 @@ public class CollectionManager {
         sortOptions.put(7, "VIEWS_DESC");
         sortOptions.put(8, "VIEWS_ASC");
         sortOptions.put(9, "CATEGORY_ASC");
+        sortOptions.put(10, "ID_ASC"); //for binary search sorting only
+
     }
 
 
@@ -54,12 +56,45 @@ public class CollectionManager {
 
     // -- Finds and returns a media item using its ID
     // -- Throws an error if it does not exist
-    public Collection getById(int id) {
-        Collection item = indexById.get(id);
-        if (item == null) {
-            throw new IllegalArgumentException("Entry not found.");
+
+
+    
+    public Collection binarySearchById(int id) {
+
+        // Reuse existing sorting logic to ensure the list
+        // is sorted by ID in ascending order before searching
+        // (Binary search requires sorted data)
+        List<Collection> sorted = getSorted(10, items); // ID_ASC
+
+        // Initialize search boundaries
+        int low = 0;
+        int high = sorted.size() - 1;
+
+        // Perform binary search
+        while (low <= high) {
+
+            // Calculate the middle index
+            int mid = (low + high) / 2;
+
+            // Retrieve the ID at the middle position
+            int midId = sorted.get(mid).getId();
+
+            // Check if the middle ID matches the target
+            if (midId == id) {
+                return sorted.get(mid); // Match found
+
+            // If target ID is greater, search the right half
+            } else if (midId < id) {
+                low = mid + 1;
+
+            // If target ID is smaller, search the left half
+            } else {
+                high = mid - 1;
+            }
         }
-        return item;
+
+        // Return null if the ID is not found
+        return null;
     }
     
     
@@ -176,6 +211,11 @@ public class CollectionManager {
                     Collection::getCategory,
                     String.CASE_INSENSITIVE_ORDER
                 ));
+            
+            // Sort for binary search, by ID ascending
+            case "ID_ASC" ->
+            copy.sort(Comparator.comparingInt(Collection::getId));
+
         }
 
         // Return the sorted list copy
@@ -230,7 +270,7 @@ public class CollectionManager {
             throw new IllegalArgumentException("Views cannot be negative.");
         }
 
-        Collection c = getById(id);
+        Collection c = binarySearchById(id);
         // -- Increments the 'views' counter multiple times based on the count
         for (int i = 0; i < count; i++) {
             c.addView();
@@ -253,7 +293,7 @@ public class CollectionManager {
     
     //update movie type and ranking
     public void updateMovie(int id, double rating, String movieType) {
-        Collection c = getById(id);
+        Collection c = binarySearchById(id);
 
         if (!(c instanceof Movie m)) {
             throw new IllegalArgumentException("Item is not a Movie");
@@ -265,7 +305,7 @@ public class CollectionManager {
     
     //update subject and ranking
     public void updateDocumentary(int id, double rating, String subject) {
-        Collection c = getById(id);
+        Collection c = binarySearchById(id);
 
         if (!(c instanceof Documentary d)) {
             throw new IllegalArgumentException("Item is not a Documentary");
@@ -277,7 +317,7 @@ public class CollectionManager {
 
     //update seasons, episodes, and ranking
     public void updateShow(int id, double rating, int seasons, int episodes) {
-        Collection c = getById(id);
+        Collection c = binarySearchById(id);
 
         if (!(c instanceof Show s)) {
             throw new IllegalArgumentException("Item is not a Show");

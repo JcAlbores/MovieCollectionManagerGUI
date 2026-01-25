@@ -831,7 +831,7 @@ public class MainFrame extends javax.swing.JFrame {
         String category = cmbCategoryFilter.getSelectedItem().toString();
         if (!category.contains("All")) {
             workingList.removeIf(c ->
-                !c.getCategory().equalsIgnoreCase(category)
+                !c.getCategory().equalsIgnoreCase(category) //Remove every media item whose category does not match the selected category.
             );
         }
 
@@ -846,77 +846,17 @@ public class MainFrame extends javax.swing.JFrame {
         }
 
         // Apply SORT
-        java.util.Comparator<core.Collection> comparator = getSelectedComparator();
-        if (comparator != null) {
-            workingList.sort(comparator);
-        }
+        int sortKey = cmbSort.getSelectedIndex();
+        workingList = collection.getSorted(sortKey, workingList);
+
+
 
         // Update UI
         refreshTable(workingList);
         updateViewAllButtonState();
     }
     
-    /**
-     * Returns the appropriate Comparator based on
-     * the selected sort option in the combo box.
-     */
-    private java.util.Comparator<core.Collection> getSelectedComparator() {
 
-        return switch (cmbSort.getSelectedIndex()) {
-        	
-        	// Sort by Title (A–Z)
-            case 1 -> java.util.Comparator.comparing(
-                core.Collection::getTitle,
-                String.CASE_INSENSITIVE_ORDER
-            );
-            
-            // Sort by Title (Z–A)
-            case 2 -> java.util.Comparator.comparing(
-                core.Collection::getTitle,
-                String.CASE_INSENSITIVE_ORDER
-            ).reversed();
-
-            // Sort by Year (Ascending)
-            case 3 -> java.util.Comparator.comparingInt(
-                core.Collection::getYear
-            );
-
-            // Sort by Year (Descending)
-            case 4 -> java.util.Comparator.comparingInt(
-                core.Collection::getYear
-            ).reversed();
-
-            // Sort by Rating (High → Low)
-            case 5 -> java.util.Comparator.comparingDouble(
-                core.Collection::getRating
-            ).reversed();
-
-            // Sort by Rating (Low → High)
-            case 6 -> java.util.Comparator.comparingDouble(
-                core.Collection::getRating
-            );
-
-            // Sort by Views (High → Low)
-            case 7 -> java.util.Comparator.comparingInt(
-                core.Collection::getViews
-            ).reversed();
-
-            // Sort by Views (Low → High)
-            case 8 -> java.util.Comparator.comparingInt(
-                core.Collection::getViews
-            );
-
-            // Sort by Category (A–Z)
-            case 9 -> java.util.Comparator.comparing(
-                core.Collection::getCategory,
-                String.CASE_INSENSITIVE_ORDER
-            );
-            
-            // Default: no sorting applied
-            default -> null;
-        };
-    }
-    
     /**
      * Determines whether the table is currently in its default state,
      * meaning no sorting, filtering, or searching is applied.

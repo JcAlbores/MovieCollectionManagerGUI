@@ -201,7 +201,7 @@ public class Main {
 
             // Execute corresponding search operation
             switch (choice) {
-                case 1 -> searchById();     // search using unique ID
+                case 1 -> searchByIdBinary();     // search using unique ID
                 case 2 -> searchByTitle();  // search using title keyword
                 case 0 -> back = true;      // exit search menu
                 default -> System.out.println("Invalid option.");
@@ -223,17 +223,20 @@ public class Main {
     }
     
     // -- Displays details for a media item based on its ID
-    private void searchById() {
+    private void searchByIdBinary() {
 
         int id = promptInt("Enter media ID");
 
-        try {
-            Collection c = collection.getById(id);
-            System.out.println(describe(c));
-        } catch (IllegalArgumentException e) {
-            System.out.println("Entry not found.");
+        Collection result = collection.binarySearchById(id);
+
+        if (result == null) {
+            System.out.println("No record found.");
+        } else {
+            result.addView();
+            System.out.println(describe(result));
         }
     }
+
 
     
     // -- Lets the user search for media by title or partial match
@@ -405,7 +408,7 @@ public class Main {
 
         try {
             // Retrieve the media item from the collection using the ID
-            Collection c = collection.getById(id);
+            Collection c = collection.binarySearchById(id);
 
             // Controls whether the update menu loop should exit
             boolean back = false;

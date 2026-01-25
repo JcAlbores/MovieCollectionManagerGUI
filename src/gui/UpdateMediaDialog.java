@@ -378,7 +378,7 @@ public class UpdateMediaDialog extends javax.swing.JDialog {
             }
 
             // Retrieve the media object from the collection using its unique ID
-            Collection c = collection.getById(mediaId);
+            Collection c = collection.binarySearchById(mediaId);
 
             // ===== UPDATE COMMON FIELD =====
             // Rating is mutable and applicable to all media types
@@ -593,7 +593,7 @@ public class UpdateMediaDialog extends javax.swing.JDialog {
      */
     private void loadMediaData() {
 
-        core.Collection c = collection.getById(mediaId);
+        core.Collection c = collection.binarySearchById(mediaId);
         
         // Populate common fields
         txtTitle.setText(c.getTitle());

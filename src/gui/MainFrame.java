@@ -381,7 +381,7 @@ public class MainFrame extends javax.swing.JFrame {
                 c.getCategory(),
                 c.getGenre(),
                 c.getYear(),
-                c.getRating(),
+                String.format("%.1f", c.getRating()),
                 c.getViews()
             });
         }
@@ -806,7 +806,7 @@ public class MainFrame extends javax.swing.JFrame {
                 c.getCategory(),
                 c.getGenre(),
                 c.getYear(),
-                c.getRating(),
+                String.format("%.1f", c.getRating()),
                 c.getViews()
             };
 

@@ -104,11 +104,48 @@ public class CollectionManager {
         }
         return false;
     }
+    
+    // ==============================
+    // -- Update media
+    // ==============================
+    
+    //update movie type and ranking
+    public void updateMovie(int id, double rating, String movieType) {
+        Collection c = getById(id);
 
-    // -- Updates the rating of a specific media item
-    public void updateRating(int id, double rating) {
-        getById(id).setRating(rating);
+        if (!(c instanceof Movie m)) {
+            throw new IllegalArgumentException("Item is not a Movie");
+        }
+
+        m.setRating(rating);
+        m.setMovieType(movieType);
     }
+    
+    //update subject and ranking
+    public void updateDocumentary(int id, double rating, String subject) {
+        Collection c = getById(id);
+
+        if (!(c instanceof Documentary d)) {
+            throw new IllegalArgumentException("Item is not a Documentary");
+        }
+
+        d.setRating(rating);
+        d.setSubject(subject);
+    }
+
+    //update seasons, episodes, and ranking
+    public void updateShow(int id, double rating, int seasons, int episodes) {
+        Collection c = getById(id);
+
+        if (!(c instanceof Show s)) {
+            throw new IllegalArgumentException("Item is not a Show");
+        }
+
+        s.setRating(rating);
+        s.setSeasons(seasons);
+        s.setEpisodes(episodes);
+    }
+
 
     // ==============================
     // -- Evaluations (top 3)

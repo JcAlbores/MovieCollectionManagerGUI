@@ -23,6 +23,24 @@ public class CollectionManager {
 
     // -- Determines how many top results to show (for rankings)
     private static final int TOP_N = 3;
+    
+    // Stores sort options
+    private final Map<Integer, String> sortOptions = new HashMap<>();
+    
+    //constructor, initialize sortOptions Hashmap
+    public CollectionManager() {
+
+        sortOptions.put(1, "TITLE_ASC");
+        sortOptions.put(2, "TITLE_DESC");
+        sortOptions.put(3, "YEAR_ASC");
+        sortOptions.put(4, "YEAR_DESC");
+        sortOptions.put(5, "RATING_DESC");
+        sortOptions.put(6, "RATING_ASC");
+        sortOptions.put(7, "VIEWS_DESC");
+        sortOptions.put(8, "VIEWS_ASC");
+        sortOptions.put(9, "CATEGORY_ASC");
+    }
+
 
     // ==============================
     // -- Basic Operations
@@ -43,6 +61,8 @@ public class CollectionManager {
         }
         return item;
     }
+    
+    
 
     // -- Searches media items by title or partial title
     public List<Collection> findByTitle(String titlePart) {
@@ -54,6 +74,96 @@ public class CollectionManager {
         }
         return result;
     }
+    
+    /**
+     * Returns a sorted copy of the provided collection list based on the given sort key.
+     *
+     * This overloaded version allows sorting of any supplied list (e.g. filtered or searched results)
+     * without modifying the original source list.
+     *
+     * parameter sortKey Integer representing the selected sort option
+     *parameter source  The list of Collection objects to be sorted
+     * parameter A new List containing the sorted results
+     */
+    public List<Collection> getSorted(int sortKey, List<Collection> source) {
+
+        // Create a defensive copy of the PROVIDED list
+        // This ensures the original list (source) remains unchanged
+        List<Collection> copy = new ArrayList<>(source);
+
+        // Retrieve the sorting option mapped to the given sort key
+        String option = sortOptions.get(sortKey);
+
+        // If no valid sort option exists, return the unsorted copy
+        if (option == null) return copy;
+
+        // Apply sorting logic based on the selected option
+        switch (option) {
+
+            // Sort by title alphabetically (A–Z), ignoring case
+            case "TITLE_ASC" ->
+                copy.sort(Comparator.comparing(
+                    Collection::getTitle,
+                    String.CASE_INSENSITIVE_ORDER
+                ));
+
+            // Sort by title in reverse alphabetical order (Z–A)
+            case "TITLE_DESC" ->
+                copy.sort(Comparator.comparing(
+                    Collection::getTitle,
+                    String.CASE_INSENSITIVE_ORDER
+                ).reversed());
+
+            // Sort by release year in ascending order
+            case "YEAR_ASC" ->
+                copy.sort(Comparator.comparingInt(Collection::getYear));
+
+            // Sort by release year in descending order
+            case "YEAR_DESC" ->
+                copy.sort(Comparator.comparingInt(Collection::getYear).reversed());
+
+            // Sort by rating from highest to lowest
+            case "RATING_DESC" ->
+                copy.sort(Comparator.comparingDouble(Collection::getRating).reversed());
+
+            // Sort by rating from lowest to highest
+            case "RATING_ASC" ->
+                copy.sort(Comparator.comparingDouble(Collection::getRating));
+
+            // Sort by number of views from highest to lowest
+            case "VIEWS_DESC" ->
+                copy.sort(Comparator.comparingInt(Collection::getViews).reversed());
+
+            // Sort by number of views from lowest to highest
+            case "VIEWS_ASC" ->
+                copy.sort(Comparator.comparingInt(Collection::getViews));
+
+            // Sort by category alphabetically (A–Z), ignoring case
+            case "CATEGORY_ASC" ->
+                copy.sort(Comparator.comparing(
+                    Collection::getCategory,
+                    String.CASE_INSENSITIVE_ORDER
+                ));
+        }
+
+        // Return the sorted list copy
+        return copy;
+    }
+
+    /**
+     * Convenience overload that sorts the master collection list.
+     *
+     * This method delegates sorting to the main getSorted method
+     * while keeping the original items list protected.
+     *
+     * parameter sortKey Integer representing the selected sort option
+     * parameter A sorted copy of the master collection
+     */
+    public List<Collection> getSorted(int sortKey) {
+        return getSorted(sortKey, items);
+    }
+
+    
     // ==============================
     // -- Add media
     // ==============================

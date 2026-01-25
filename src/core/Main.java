@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package core;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -222,52 +219,176 @@ public class Main {
     // -- Update / delete media sub-menu 
     // ==============================
     
-    // -- Menu for updating rating or view counts
+    // -- Menu for updating records
     private void updateMenu() {
         boolean back = false;
 
         while (!back) {
             System.out.println("\n--- Update Media ---");
-            System.out.println("1) Update Rating");
-            System.out.println("2) Add Views");
+            System.out.println("1) Update Media");
             System.out.println("0) Back");
 
             int choice = promptInt("Choose an option");
 
             switch (choice) {
-                case 1 -> updateRating();
-                case 2 -> updateViews();
+                case 1 -> updateMedia();
                 case 0 -> back = true;
                 default -> System.out.println("Invalid option.");
             }
         }
     }
+
     
-    // -- Updates the rating of a media item by ID
-    private void updateRating() {
+    /**
+     * Handles the update workflow for a selected media item in the CLI.
+     * Allows users to update the rating and type-specific fields
+     * based on the actual media type.
+     */
+    private void updateMedia() {
+
+        // Prompt user to enter the media ID to update
         int id = promptInt("Enter media ID");
 
         try {
-            double rating = promptRating();
-            collection.updateRating(id, rating);
-            System.out.println("Rating updated successfully.");
+            // Retrieve the media item from the collection using the ID
+            Collection c = collection.getById(id);
+
+            // Controls whether the update menu loop should exit
+            boolean back = false;
+
+            // Loop until the user chooses to go back
+            while (!back) {
+
+                // Display update menu header with media details
+                System.out.println("\n--- Update Options for: "
+                        + c.getTitle() + " (" + c.getCategory() + ") ---");
+
+                // Common update option for all media types
+                System.out.println("1) Update Rating");
+
+                // Display type-specific update options
+                if (c instanceof Movie) {
+                    System.out.println("2) Update Movie Type");
+
+                } else if (c instanceof Show) {
+                    System.out.println("2) Update Seasons");
+                    System.out.println("3) Update Episodes");
+
+                } else if (c instanceof Documentary) {
+                    System.out.println("2) Update Subject / Topic");
+                }
+
+                // Option to return to the previous menu
+                System.out.println("0) Back");
+
+                // Read user menu selection
+                int choice = promptInt("Choose an option");
+
+                // Handle user choice
+                switch (choice) {
+
+                    // Update rating only (shared across all media types)
+                    case 1 -> updateRatingOnly(c);
+
+                    // Update type-specific field using a helper method
+                    case 2 -> updateMediaSpecificField(c);
+
+                    // Update episodes (only valid for Show objects)
+                    case 3 -> {
+                        if (c instanceof Show s) {
+                            int episodes = promptInt("Total episodes");
+                            s.setEpisodes(episodes);
+                            System.out.println("Episodes updated.");
+                        } else {
+                            System.out.println("Invalid option.");
+                        }
+                    }
+
+                    // Exit update menu loop
+                    case 0 -> back = true;
+
+                    // Handle invalid menu input
+                    default -> System.out.println("Invalid option.");
+                }
+            }
+
         } catch (IllegalArgumentException e) {
+            // Handle case where media ID does not exist
             System.out.println("Entry not found.");
         }
     }
+    
+    
+    /**
+     * Updates only the rating of a media item.
+     * This operation is common across all media types.
+     *
+     * parameter c = The Collection object whose rating will be updated
+     */
+    private void updateRatingOnly(Collection c) {
 
-    // -- Adds extra views to a media item
-    private void updateViews() {
-        int id = promptInt("Enter media ID");
+        // Prompt user for a new rating value (with validation handled elsewhere)
+        double rating = promptRating();
 
-        try {
-            int viewsToAdd = promptInt("Number of views to add");
-            collection.addViews(id, viewsToAdd);
-            System.out.println("Views updated successfully.");
-        } catch (IllegalArgumentException e) {
-            System.out.println("Entry not found.");
+        // Update the rating field of the selected media item
+        c.setRating(rating);
+
+        // Provide user feedback
+        System.out.println("Rating updated.");
+    }
+
+    /**
+     * Updates media-type-specific fields using polymorphism.
+     * The actual field updated depends on the runtime type of the object.
+     *
+     * parameter c = The Collection object to be updated
+     */
+    private void updateMediaSpecificField(Collection c) {
+
+        // If the media is a Movie, update its movie type
+        if (c instanceof Movie m) {
+
+            // Prompt user to select a movie type
+            String movieType = chooseMovieType();
+
+            // Update movie-specific attribute
+            m.setMovieType(movieType);
+
+            System.out.println("Movie type updated.");
+        }
+
+        // If the media is a Show, update the number of seasons
+        else if (c instanceof Show s) {
+
+            // Prompt user for the number of seasons
+            int seasons = promptInt("Number of seasons");
+
+            // Update show-specific attribute
+            s.setSeasons(seasons);
+
+            System.out.println("Seasons updated.");
+        }
+
+        // If the media is a Documentary, update its subject/topic
+        else if (c instanceof Documentary d) {
+
+            // Prompt user to enter the documentary subject or topic
+            String subject = promptText("Subject / Topic");
+
+            // Update documentary-specific attribute
+            d.setSubject(subject);
+
+            System.out.println("Subject updated.");
+        }
+
+        // Fallback safety case (should not normally occur)
+        else {
+            System.out.println("Invalid media type.");
         }
     }
+
+
+
 
     // -- Deletes a media item based on ID
     private void deleteMedia() {

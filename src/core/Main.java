@@ -173,7 +173,7 @@ public class Main {
                 case 1 -> listAll();
                 case 2 -> searchMenu();
                 case 3 -> filterByCategory();
-                case 4 -> sortMedia();
+                case 4 -> sortMenu();
                 case 0 -> back = true;
                 default -> System.out.println("Invalid option.");
             }
@@ -300,72 +300,60 @@ public class Main {
 
     
     /**
-     * Displays sorting options and sorts the media collection
-     * based on the selected attribute.
-     * Sorting is applied directly to the collection list.
+     * Displays the sort menu for the Text-Based Interface (TBI)
+     * and allows the user to sort media records using shared
+     * backend sorting logic.
+     *
+     * This method reuses the same sorting implementation
+     * used by the GUI to ensure consistency across interfaces.
      */
-    private void sortMedia() {
+    private void sortMenu() {
 
-        boolean back = false; // controls loop exit
+        // Controls whether the user wants to return to the previous menu
+        boolean back = false;
 
-        // Loop until user chooses to go back
+        // Loop until the user selects the "Back" option
         while (!back) {
+
+            // Display available sort options
             System.out.println("\n--- Sort Media ---");
             System.out.println("1) Title (A–Z)");
-            System.out.println("2) Year (Ascending)");
-            System.out.println("3) Rating (High → Low)");
-            System.out.println("4) Views (High → Low)");
+            System.out.println("2) Title (Z–A)");
+            System.out.println("3) Year (Ascending)");
+            System.out.println("4) Year (Descending)");
+            System.out.println("5) Rating (High → Low)");
+            System.out.println("6) Rating (Low → High)");
+            System.out.println("7) Views (High → Low)");
+            System.out.println("8) Views (Low → High)");
+            System.out.println("9) Category (A–Z)");
             System.out.println("0) Back");
 
-            // Read user choice
-            int choice = promptInt("Choose an option");
+            // Prompt user for sort selection
+            int sortKey = promptInt("Choose a sort option");
 
-            // Get reference to the media collection
-            List<Collection> list = collection.getAll();
-
-            switch (choice) {
-
-                // Sort alphabetically by title (case-insensitive)
-                case 1 ->
-                    list.sort((a, b) ->
-                        a.getTitle().compareToIgnoreCase(b.getTitle())
-                    );
-
-                // Sort by release year (ascending)
-                case 2 ->
-                    list.sort((a, b) ->
-                        Integer.compare(a.getYear(), b.getYear())
-                    );
-
-                // Sort by rating (descending)
-                case 3 ->
-                    list.sort((a, b) ->
-                        Double.compare(b.getRating(), a.getRating())
-                    );
-
-                // Sort by number of views (descending)
-                case 4 ->
-                    list.sort((a, b) ->
-                        Integer.compare(b.getViews(), a.getViews())
-                    );
-
-                // Exit sorting menu
-                case 0 -> {
-                    back = true;
-                    continue;
-                }
-
-                // Handle invalid input
-                default -> {
-                    System.out.println("Invalid option.");
-                    continue;
-                }
+            // Exit sort menu if user selects "Back"
+            if (sortKey == 0) {
+                back = true;
+                continue;
             }
 
+            // CORE REUSE
+            // Delegate sorting to CollectionManager to ensure
+            // the same logic is used by both GUI and TBI
+            List<Collection> sorted =
+                    collection.getSorted(sortKey, collection.getAll());
+
+            // Handle empty collection case
+            if (sorted.isEmpty()) {
+                System.out.println("No records to sort.");
+            } 
             // Display sorted results
-            list.forEach(c -> System.out.println(describe(c)));
+            else {
+                sorted.forEach(c -> System.out.println(describe(c)));
+            }
         }
     }
+
     
     
     

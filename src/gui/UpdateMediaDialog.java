@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
- */
 package gui;
 import core.CollectionManager;
 import core.Collection;
@@ -365,83 +361,88 @@ public class UpdateMediaDialog extends javax.swing.JDialog {
 
     
     /**
-     * Handles Update button click.
+     * Handles the Update button action.
      *
-     * Updates the rating of the selected media item and validates
-     * type-specific fields without allowing immutable attributes
-     * to be modified.
+     * This method validates user input, updates the mutable fields of the
+     * selected media item (rating and type-specific attributes), and
+     * prevents modification of immutable fields such as title, year, genre,
+     * and media type.
      */
-    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
+    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {
 
         try {
-               // Validate rating
-               double rating = (double) spnRating.getValue();
-               if (rating < 0 || rating > 10) {
-                   throw new IllegalArgumentException("Rating must be between 0 and 10.");
-               }
+            // Perform input validation before applying any changes
+            // If validation fails, exit early and show an error message
+            if (!validateInputs()) {
+                return;
+            }
 
-               //Update rating (common to all)
-               collection.updateRating(mediaId, rating);
+            // Retrieve the media object from the collection using its unique ID
+            Collection c = collection.getById(mediaId);
 
-               //Update type-specific fields
-               core.Collection c = collection.getById(mediaId);
-               
-               //Type-specific validation (fields are final and not editable)
-               if (c instanceof core.Movie m) {
+            // ===== UPDATE COMMON FIELD =====
+            // Rating is mutable and applicable to all media types
+            double rating = (double) spnRating.getValue();
+            c.setRating(rating);
 
-                   String movieType = cmbMovieType.getSelectedItem().toString();
-                   if (movieType.equals("Select movie type")) {
-                       throw new IllegalArgumentException("Please select a movie type.");
-                   }
+            // ===== UPDATE TYPE-SPECIFIC FIELD =====
+            // Apply updates based on the runtime media type
 
-               } else if (c instanceof core.Show s) {
+            // Movie-specific update
+            if (c instanceof Movie m) {
 
-                   int seasons = Integer.parseInt(txtSeasons.getText().trim());
-                   int episodes = Integer.parseInt(txtEpisodes.getText().trim());
+                // Retrieve selected movie type and normalize to lowercase
+                // (matches the internal data model format)
+                String movieType = cmbMovieType
+                        .getSelectedItem()
+                        .toString()
+                        .toLowerCase();
 
-                   if (seasons <= 0 || episodes <= 0) {
-                       throw new IllegalArgumentException("Seasons and episodes must be positive numbers.");
-                   }
+                // Update movie-specific attribute
+                m.setMovieType(movieType);
 
-                   // ❗ Show fields are final → not editable by design
-                   // ✔ acceptable for this assessment
+            }
+            // Show-specific update
+            else if (c instanceof Show s) {
 
-               } else if (c instanceof core.Documentary d) {
+                // Parse and update number of seasons and episodes
+                int seasons = Integer.parseInt(txtSeasons.getText().trim());
+                int episodes = Integer.parseInt(txtEpisodes.getText().trim());
 
-                   String subject = txtSubject.getText().trim();
-                   if (subject.isEmpty()) {
-                       throw new IllegalArgumentException("Subject cannot be empty.");
-                   }
+                s.setSeasons(seasons);
+                s.setEpisodes(episodes);
 
-                   // subject is final → not editable
-               }
+            }
+            // Documentary-specific update
+            else if (c instanceof Documentary d) {
 
-               JOptionPane.showMessageDialog(
-                   this,
-                   "Media updated successfully.",
-                   "Update Successful",
-                   JOptionPane.INFORMATION_MESSAGE
-               );
+                // Retrieve and update documentary subject/topic
+                String subject = txtSubject.getText().trim();
+                d.setSubject(subject);
+            }
 
-               dispose(); // close dialog
+            // Notify user that the update was successful
+            JOptionPane.showMessageDialog(
+                this,
+                "Media updated successfully.",
+                "Update Successful",
+                JOptionPane.INFORMATION_MESSAGE
+            );
 
-           } catch (NumberFormatException e) {
-               JOptionPane.showMessageDialog(
-                   this,
-                   "Please enter valid numeric values.",
-                   "Input Error",
-                   JOptionPane.ERROR_MESSAGE
-               );
+            // Close the dialog after successful update
+            dispose();
 
-           } catch (Exception e) {
-               JOptionPane.showMessageDialog(
-                   this,
-                   e.getMessage(),
-                   "Update Error",
-                   JOptionPane.ERROR_MESSAGE
-               );
-           }
-    }//GEN-LAST:event_btnUpdateActionPerformed
+        } catch (Exception e) {
+            // Catch and display any unexpected runtime or validation errors
+            JOptionPane.showMessageDialog(
+                this,
+                e.getMessage(),
+                "Update Error",
+                JOptionPane.ERROR_MESSAGE
+            );
+        }
+    }
+
 
     /**
      * Handles Cancel button click.

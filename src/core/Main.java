@@ -78,7 +78,7 @@ public class Main {
         while (!back) {
             System.out.println("\n--- Media Management ---");
             System.out.println("1) Add Media");
-            System.out.println("2) View / Search Media");
+            System.out.println("2) View Media");
             System.out.println("3) Update Media");
             System.out.println("4) Delete Media");
             System.out.println("0) Back");
@@ -161,22 +161,54 @@ public class Main {
     private void viewMenu() {
         boolean back = false;
         while (!back) {
-            System.out.println("\n--- View / Search Media ---");
+            System.out.println("\n--- View Media ---");
             System.out.println("1) List all entries");
-            System.out.println("2) View by ID");
-            System.out.println("3) Search by title");
+            System.out.println("2) Search media");
+            System.out.println("3) Filter by category");
+            System.out.println("4) Sort media");
             System.out.println("0) Back");
 
             int choice = promptInt("Choose an option");
             switch (choice) {
                 case 1 -> listAll();
-                case 2 -> viewById();
-                case 3 -> searchByTitle();
+                case 2 -> searchMenu();
+                case 3 -> filterByCategory();
+                case 4 -> sortMedia();
                 case 0 -> back = true;
                 default -> System.out.println("Invalid option.");
             }
         }
     }
+    
+    /**
+     * Displays a search menu that allows the user to
+     * search media records by ID or by title.
+     * The menu loops until the user chooses to go back.
+     */
+    private void searchMenu() {
+
+        boolean back = false; // controls loop exit
+
+        // Loop until user selects "Back"
+        while (!back) {
+            System.out.println("\n--- Search Media ---");
+            System.out.println("1) Search by ID");
+            System.out.println("2) Search by Title");
+            System.out.println("0) Back");
+
+            // Get user choice
+            int choice = promptInt("Choose an option");
+
+            // Execute corresponding search operation
+            switch (choice) {
+                case 1 -> searchById();     // search using unique ID
+                case 2 -> searchByTitle();  // search using title keyword
+                case 0 -> back = true;      // exit search menu
+                default -> System.out.println("Invalid option.");
+            }
+        }
+    }
+
     
     // -- Displays all media in the collection
     private void listAll() {
@@ -191,16 +223,18 @@ public class Main {
     }
     
     // -- Displays details for a media item based on its ID
-    private void viewById() {
-        int id = promptInt("Enter ID");
+    private void searchById() {
+
+        int id = promptInt("Enter media ID");
+
         try {
             Collection c = collection.getById(id);
-            c.addView(); // counts as a view
             System.out.println(describe(c));
         } catch (IllegalArgumentException e) {
             System.out.println("Entry not found.");
         }
     }
+
     
     // -- Lets the user search for media by title or partial match
     private void searchByTitle() {
@@ -214,6 +248,126 @@ public class Main {
             System.out.println(describe(c));
         }
     }
+    
+    /**
+     * Displays a menu that allows the user to filter media
+     * records by category (Movie, Show, Documentary).
+     * The method loops until the user chooses to go back.
+     */
+    private void filterByCategory() {
+
+        boolean back = false;
+
+        while (!back) {
+            System.out.println("\n--- Filter by Category ---");
+            System.out.println("1) Movie");
+            System.out.println("2) Show");
+            System.out.println("3) Documentary");
+            System.out.println("0) Back");
+
+            int choice = promptInt("Choose an option");
+
+            String category;
+
+            switch (choice) {
+                case 1 -> category = "Movie";
+                case 2 -> category = "Show";
+                case 3 -> category = "Documentary";
+                case 0 -> {
+                    back = true;
+                    continue;
+                }
+                default -> {
+                    System.out.println("Invalid option.");
+                    continue;
+                }
+            }
+
+            boolean found = false;
+
+            for (Collection c : collection.getAll()) {
+                if (c.getCategory().equalsIgnoreCase(category)) {
+                    System.out.println(describe(c));
+                    found = true;
+                }
+            }
+
+            if (!found) {
+                System.out.println("No records found.");
+            }
+        }
+    }
+
+    
+    /**
+     * Displays sorting options and sorts the media collection
+     * based on the selected attribute.
+     * Sorting is applied directly to the collection list.
+     */
+    private void sortMedia() {
+
+        boolean back = false; // controls loop exit
+
+        // Loop until user chooses to go back
+        while (!back) {
+            System.out.println("\n--- Sort Media ---");
+            System.out.println("1) Title (A–Z)");
+            System.out.println("2) Year (Ascending)");
+            System.out.println("3) Rating (High → Low)");
+            System.out.println("4) Views (High → Low)");
+            System.out.println("0) Back");
+
+            // Read user choice
+            int choice = promptInt("Choose an option");
+
+            // Get reference to the media collection
+            List<Collection> list = collection.getAll();
+
+            switch (choice) {
+
+                // Sort alphabetically by title (case-insensitive)
+                case 1 ->
+                    list.sort((a, b) ->
+                        a.getTitle().compareToIgnoreCase(b.getTitle())
+                    );
+
+                // Sort by release year (ascending)
+                case 2 ->
+                    list.sort((a, b) ->
+                        Integer.compare(a.getYear(), b.getYear())
+                    );
+
+                // Sort by rating (descending)
+                case 3 ->
+                    list.sort((a, b) ->
+                        Double.compare(b.getRating(), a.getRating())
+                    );
+
+                // Sort by number of views (descending)
+                case 4 ->
+                    list.sort((a, b) ->
+                        Integer.compare(b.getViews(), a.getViews())
+                    );
+
+                // Exit sorting menu
+                case 0 -> {
+                    back = true;
+                    continue;
+                }
+
+                // Handle invalid input
+                default -> {
+                    System.out.println("Invalid option.");
+                    continue;
+                }
+            }
+
+            // Display sorted results
+            list.forEach(c -> System.out.println(describe(c)));
+        }
+    }
+    
+    
     
     // ==============================
     // -- Update / delete media sub-menu 

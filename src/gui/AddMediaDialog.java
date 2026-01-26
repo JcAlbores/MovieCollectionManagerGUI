@@ -353,101 +353,16 @@ public class AddMediaDialog extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /*
-    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-
-    // Basic validation
-        if (cmbType.getSelectedIndex() == 0) {
-            JOptionPane.showMessageDialog(
-                this,
-                "Please select a media type.",
-                "Validation Error",
-                JOptionPane.WARNING_MESSAGE
-            );
-            return;
-        }
-        
-        // Retrieve and sanitize common input fields
-        String title = txtTitle.getText().trim();
-        String genre = txtGenre.getText().trim();
-        int year = Integer.parseInt(txtYear.getText().trim());
-        double rating = (double) spnRating.getValue();
-
-        
-        // Validate required common fields
-        if (title.isEmpty() || genre.isEmpty()) {
-            JOptionPane.showMessageDialog(
-                this,
-                "Title and Genre are required.",
-                "Validation Error",
-                JOptionPane.WARNING_MESSAGE
-            );
-            return;
-        }
-
-        // Media-type specific logic
-        String type = cmbType.getSelectedItem().toString();
-
-        try {
-            switch (type) {
-            
-            	// Movie creation logic
-                case "Movie" -> {
-                    String movieType = cmbMovieType.getSelectedItem().toString();
-                    if (movieType.equals("Select movie type")) {
-                        throw new IllegalArgumentException("Please select a movie type.");
-                    }
-                    collection.addMovie(title, genre, year, rating, movieType);
-                }
-                
-                // TV Show creation logic
-                case "Show" -> {
-                    int seasons = Integer.parseInt(txtSeasons.getText().trim());
-                    int episodes = Integer.parseInt(txtEpisodes.getText().trim());
-                    collection.addShow(title, genre, year, rating, seasons, episodes);
-                }
-
-                // Documentary creation logic
-                case "Documentary" -> {
-                    String subject = txtSubject.getText().trim();
-                    if (subject.isEmpty()) {
-                        throw new IllegalArgumentException("Subject is required.");
-                    }
-                    collection.addDocumentary(title, genre, year, rating, subject);
-                }
-            }
-            
-            // Success message
-            JOptionPane.showMessageDialog(
-                this,
-                "Media added successfully.",
-                "Success",
-                JOptionPane.INFORMATION_MESSAGE
-            );
-
-            dispose(); // close dialog
-
-        } catch (Exception ex) {
-        	// Display validation or parsing errors
-            JOptionPane.showMessageDialog(
-                this,
-                ex.getMessage(),
-                "Input Error",
-                JOptionPane.ERROR_MESSAGE
-            );
-        }
-    }//GEN-LAST:event_btnSaveActionPerformed
-    */
     
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {
 
-        // ✅ Step 1: Validate ALL inputs first
+        //Step 1: Validate ALL inputs first
         if (!validateInputs()) {
             return; // error dialog already shown
         }
 
         try {
-            // ✅ Step 2: Safe to read inputs now
+            // Step 2: Safe to read inputs now
             String title = txtTitle.getText().trim();
             String genre = txtGenre.getText().trim();
             int year = Integer.parseInt(txtYear.getText().trim());
@@ -455,7 +370,7 @@ public class AddMediaDialog extends javax.swing.JDialog {
 
             String type = cmbType.getSelectedItem().toString();
 
-            // ✅ Step 3: Create media based on type
+            // Step 3: Create media based on type
             switch (type) {
 
                 case "Movie" -> {
@@ -475,7 +390,7 @@ public class AddMediaDialog extends javax.swing.JDialog {
                 }
             }
 
-            // ✅ Step 4: Success feedback
+            // Step 4: Success feedback
             JOptionPane.showMessageDialog(
                 this,
                 "Media added successfully.",

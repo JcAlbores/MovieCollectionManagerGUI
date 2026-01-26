@@ -353,6 +353,7 @@ public class AddMediaDialog extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /*
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
 
     // Basic validation
@@ -436,6 +437,64 @@ public class AddMediaDialog extends javax.swing.JDialog {
             );
         }
     }//GEN-LAST:event_btnSaveActionPerformed
+    */
+    
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {
+
+        // ✅ Step 1: Validate ALL inputs first
+        if (!validateInputs()) {
+            return; // error dialog already shown
+        }
+
+        try {
+            // ✅ Step 2: Safe to read inputs now
+            String title = txtTitle.getText().trim();
+            String genre = txtGenre.getText().trim();
+            int year = Integer.parseInt(txtYear.getText().trim());
+            double rating = (double) spnRating.getValue();
+
+            String type = cmbType.getSelectedItem().toString();
+
+            // ✅ Step 3: Create media based on type
+            switch (type) {
+
+                case "Movie" -> {
+                    String movieType = cmbMovieType.getSelectedItem().toString();
+                    collection.addMovie(title, genre, year, rating, movieType);
+                }
+
+                case "Show" -> {
+                    int seasons = Integer.parseInt(txtSeasons.getText().trim());
+                    int episodes = Integer.parseInt(txtEpisodes.getText().trim());
+                    collection.addShow(title, genre, year, rating, seasons, episodes);
+                }
+
+                case "Documentary" -> {
+                    String subject = txtSubject.getText().trim();
+                    collection.addDocumentary(title, genre, year, rating, subject);
+                }
+            }
+
+            // ✅ Step 4: Success feedback
+            JOptionPane.showMessageDialog(
+                this,
+                "Media added successfully.",
+                "Success",
+                JOptionPane.INFORMATION_MESSAGE
+            );
+
+            dispose(); // close dialog
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(
+                this,
+                "Unexpected error occurred:\n" + ex.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+            );
+        }
+    }
+
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
         dispose(); // close dialog

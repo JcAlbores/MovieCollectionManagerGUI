@@ -126,9 +126,9 @@ public class CollectionManager {
         // Defensive copy so the original list is not modified
         List<Collection> filtered = new ArrayList<>(source);
 
-        // If no category is specified or "All" is selected,
+        // If no category is specified or "All Category" is selected,
         // return the full list without filtering
-        if (category == null || category.equalsIgnoreCase("All")) {
+        if (category == null || category.toLowerCase().contains("all")) {
             return filtered;
         }
 

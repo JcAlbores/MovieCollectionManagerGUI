@@ -18,3 +18,6 @@ id,title,category,subtype,genre,year,rating,views,extra1,extra2
 18,TestShow,SHOW,,TestGenre,2025,8.67,0,2,25
 19,TestDoc,DOCUMENTARY,,TestGenre,2025,5.9,10,Nature,
 20,TestMobie,MOVIE,indie,Test,2014,9.9,0,,
+21,TestE2EMovie,MOVIE,Indie,e2e,2003,5.0,0,,
+22,TestE2EShow,SHOW,,e2e,2005,5.0,0,1,10
+23,TestE2EDoc,DOCUMENTARY,,e2e,2010,5.0,0,SubjectE2e,

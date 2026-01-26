@@ -388,13 +388,15 @@ public class MainFrame extends javax.swing.JFrame {
     }
     
     /**
-     * Executes keyword-based search.
+     * Triggers a search by updating the table view.
+     * The actual search logic is handled centrally
+     * inside updateTableView().
      */
     private void searchMedia() {
 
-        String keyword = txtSearch.getText().trim().toLowerCase();
-        
-        //Prevent user from searching with empty search textfield or if the placeholder is still active
+        String keyword = txtSearch.getText().trim();
+
+        // Prevent search if placeholder or empty
         if (keyword.isEmpty() || searchPlaceholderActive) {
             JOptionPane.showMessageDialog(
                 this,
@@ -405,23 +407,11 @@ public class MainFrame extends javax.swing.JFrame {
             return;
         }
 
-        java.util.List<core.Collection> results = new java.util.ArrayList<>();
-
-        for (core.Collection c : collection.getAll()) {
-
-            if (c.getTitle().toLowerCase().contains(keyword)
-                    || c.getGenre().toLowerCase().contains(keyword)
-                    || String.valueOf(c.getYear()).contains(keyword)) {
-
-                results.add(c);
-            }
-        }
-
-   
+        // Enable View All and refresh table
         enableViewAll();
         updateTableView();
-
     }
+
     
     /**
      * Adds focus and mouse behavior to search field.
@@ -829,11 +819,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         // Apply CATEGORY filter
         String category = cmbCategoryFilter.getSelectedItem().toString();
-        if (!category.contains("All")) {
-            workingList.removeIf(c ->
-                !c.getCategory().equalsIgnoreCase(category) //Remove every media item whose category does not match the selected category.
-            );
-        }
+        workingList = collection.filterByCategory(workingList, category);
 
         // Apply SEARCH filter
         String keyword = txtSearch.getText().trim().toLowerCase();
@@ -844,6 +830,7 @@ public class MainFrame extends javax.swing.JFrame {
                   || String.valueOf(c.getYear()).contains(keyword))
             );
         }
+        
 
         // Apply SORT
         int sortKey = cmbSort.getSelectedIndex();

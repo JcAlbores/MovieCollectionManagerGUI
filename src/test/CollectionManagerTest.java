@@ -25,21 +25,21 @@ public class CollectionManagerTest {
     @Test
     void addMovie_increasesCollectionSize() {
         manager.addMovie("Demon Slayer Infinity Castle", "Anime", 2025, 9.5, "Blockbuster");
-        assertEquals(1, manager.getAll().size());
+        assertEquals(1, manager.getAll().size()); //expected count = 1, actual count = 1
     }
 
     // TC-U-02: Add Show increases size
     @Test
     void addShow_increasesCollectionSize() {
         manager.addShow("Breaking Bad", "Drama", 2008, 9.5, 5, 62);
-        assertEquals(1, manager.getAll().size());
+        assertEquals(1, manager.getAll().size()); //expected count = 1, actual count = 1
     }
 
     // TC-U-03: Add Documentary increases size
     @Test
     void addDocumentary_increasesCollectionSize() {
         manager.addDocumentary("Planet Earth", "Nature", 2006, 9.4, "Wildlife");
-        assertEquals(1, manager.getAll().size());
+        assertEquals(1, manager.getAll().size()); //expected count = 1, actual count = 1
     }
 
     // TC-U-04: Search by exact title
@@ -49,8 +49,8 @@ public class CollectionManagerTest {
 
         List<Collection> result = manager.findByTitle("Pulp Fiction");
 
-        assertEquals(1, result.size());
-        assertEquals("Pulp Fiction", result.get(0).getTitle());
+        assertEquals(1, result.size()); //expected count = 1, actual count = 1
+        assertEquals("Pulp Fiction", result.get(0).getTitle()); //expected = "Pulp Fiction", actual = "Pulp Fiction"
     }
 
     // TC-U-05: Search by partial title (case-insensitive)
@@ -58,9 +58,9 @@ public class CollectionManagerTest {
     void findByTitle_partialCaseInsensitive_returnsResult() {
         manager.addMovie("Inside Out", "Animated", 2015, 9.5, "Blockbuster");
 
-        List<Collection> result = manager.findByTitle("iDe");
+        List<Collection> result = manager.findByTitle("iDe"); //partial search, case insensitive
 
-        assertEquals(1, result.size());
+        assertEquals(1, result.size()); //expected count = 1, actual count = 1
     }
 
     // TC-U-06: Search with no match returns empty list
@@ -70,7 +70,7 @@ public class CollectionManagerTest {
 
         List<Collection> result = manager.findByTitle("Test123");
 
-        assertTrue(result.isEmpty());
+        assertTrue(result.isEmpty()); //no search result as there is no record with "Test123" title
     }
 
     // TC-U-07: Filter by category "All" returns full list
@@ -82,7 +82,7 @@ public class CollectionManagerTest {
         List<Collection> filtered =
                 manager.filterByCategory(manager.getAll(), "All");
 
-        assertEquals(2, filtered.size());
+        assertEquals(2, filtered.size()); //expected count = 2, actual count = 2
     }
 
     // TC-U-08: Filter by category "Movie"
@@ -94,8 +94,8 @@ public class CollectionManagerTest {
         List<Collection> filtered =
                 manager.filterByCategory(manager.getAll(), "Movie");
 
-        assertEquals(1, filtered.size());
-        assertEquals("Movie", filtered.get(0).getCategory());
+        assertEquals(1, filtered.size()); //expected count = 1, actual count = 1
+        assertEquals("Movie", filtered.get(0).getCategory()); //expected first item = Movie, actual = same as expected
     }
 
     // TC-U-09: Sort by rating descending
@@ -106,7 +106,7 @@ public class CollectionManagerTest {
 
         List<Collection> sorted = manager.getSorted(5); // Sort Key 5 is RATING_DESC
 
-        assertEquals("High", sorted.get(0).getTitle());
+        assertEquals("High", sorted.get(0).getTitle()); //expected first item = High, actual = same as expected
     }
 
     // TC-U-10: Binary search by ID returns correct item
@@ -117,8 +117,8 @@ public class CollectionManagerTest {
 
         Collection result = manager.binarySearchById(2);
 
-        assertNotNull(result);
-        assertEquals("Avatar", result.getTitle());
+        assertNotNull(result); // checks that the result is not empty, which contains 1 movie object with media ID "2"
+        assertEquals("Avatar", result.getTitle()); //expected count = 1, actual count = 1
     }
     
     // TC-U-11: Add multiple movies from same year with different ratings and views
@@ -131,8 +131,8 @@ public class CollectionManagerTest {
 
         var topMovies = manager.getTopMoviesByYear(2020);
 
-        assertEquals(3, topMovies.size());
-        assertEquals("Movie B", topMovies.get(0).getTitle());
+        assertEquals(3, topMovies.size()); //expected count = 3, actual count = 3 (because evaluation only has top 3 rankings)
+        assertEquals("Movie B", topMovies.get(0).getTitle()); //expected Top 1 is Movie B due to having highest rating
     }
     
     // TC-U-12: Add multiple shows with different view counts
@@ -142,27 +142,27 @@ public class CollectionManagerTest {
         manager.addShow("Show B", "Drama", 2019, 9.0, 3, 30);
         manager.addShow("Show C", "Drama", 2019, 7.0, 1, 10);
 
-        manager.addViews(1, 5); // Show A
-        manager.addViews(2, 20); // Show B
-        manager.addViews(3, 10); // Show C
+        manager.addViews(1, 5); // add views to Show A
+        manager.addViews(2, 20); // add views to Show B
+        manager.addViews(3, 10); // add views to Show C
 
         var topShows = manager.evaluateTopShowsByViews();
 
-        assertEquals(3, topShows.size());
-        assertEquals("Show B", topShows.get(0).getTitle());
+        assertEquals(3, topShows.size()); //expected count = 3, actual count = 3 (because evaluation only has top 3 rankings)
+        assertEquals("Show B", topShows.get(0).getTitle()); //expected Top 1 is Show B due to having highest views count
     }
 
     // TC-U-13: Add documentaries with different ratings
     @Test
     void evaluateTopDocumentariesByRating_returnsHighestRated() {
-        manager.addDocumentary("Doc A", "History", 2018, 7.5, "War");
+        manager.addDocumentary("Doc A", "History", 2018, 9.1, "War");
         manager.addDocumentary("Doc B", "Science", 2019, 9.0, "Space");
-        manager.addDocumentary("Doc C", "Nature", 2020, 8.5, "Wildlife");
+        manager.addDocumentary("Doc C", "Nature", 2020, 8.1, "Wildlife");
 
         var topDocs = manager.evaluateTopDocumentariesByRating();
 
-        assertEquals(3, topDocs.size());
-        assertEquals("Doc B", topDocs.get(0).getTitle());
+        assertEquals(3, topDocs.size()); //expected count = 3, actual count = 3 (because evaluation only has top 3 rankings)
+        assertEquals("Doc A", topDocs.get(0).getTitle()); //expected Top 1 is Doc A due to having highest views count
     }
 
     // TC-U-14 and TC-U-15: Save collection to temporary CSV file and Load data from valid CSV file
@@ -170,14 +170,14 @@ public class CollectionManagerTest {
     void saveAndLoadFile_persistsCollectionCorrectly() throws Exception {
         manager.addMovie("Chainsaw Man Reze Arc", "Anime", 2025, 9.0, "Blockbuster");
 
-        Path tempFile = Files.createTempFile("collection_test", ".csv");
+        Path tempFile = Files.createTempFile("collection_test", ".csv"); //create temporary file for this test case
 
-        manager.saveToFile(tempFile.toString());
+        manager.saveToFile(tempFile.toString()); //save to the temporary file
 
-        CollectionManager newManager = new CollectionManager();
-        newManager.loadFromFile(tempFile.toString());
+        CollectionManager newManager = new CollectionManager(); //simulates new program run instance, to verify if the new movie persists
+        newManager.loadFromFile(tempFile.toString()); //load data from temporary file
 
-        assertEquals(1, newManager.getAll().size());
+        assertEquals(1, newManager.getAll().size()); //expected record = 1, actual = same as expected
 
         Files.deleteIfExists(tempFile); //delete the temporary file created for this test
     }
@@ -185,7 +185,7 @@ public class CollectionManagerTest {
     // TC-U-16:Load from non-existent file
     @Test
     void loadFromFile_invalidPath_throwsException() {
-        assertThrows(Exception.class, () -> {
+        assertThrows(Exception.class, () -> { //verifies that an exception is thrown when invalid CSV is used instead of MovieCollection.csv
             manager.loadFromFile("non_existent_file.csv");
         });
     }
